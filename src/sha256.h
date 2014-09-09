@@ -12,6 +12,8 @@ typedef struct {
 extern void sha256_init(sha256_ctx *ctx);
 extern sha256_ctx *sha256_new(void);
 
+extern void sha256_reset(sha256_ctx *ctx);
+
 extern void sha256_compress(sha256_ctx *ctx);
 
 extern void sha256_update(sha256_ctx *ctx, const byte *m, uint mlen);

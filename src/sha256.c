@@ -26,6 +26,11 @@ sha256_ctx *sha256_new(void)
   return ctx;
 }
 
+void sha256_reset(sha256_ctx *ctx)
+{
+  sha256_init(ctx);
+}
+
 static const uint32 k[] = {
   0x428a2f98, 0x71374491, 0xb5c0fbcf, 0xe9b5dba5,
   0x3956c25b, 0x59f111f1, 0x923f82a4, 0xab1c5ed5,
@@ -81,8 +86,6 @@ static uint32 s1(uint32 x)
 {
   return rotr(x, 17) ^ rotr(x, 19) ^ (x >> 10);
 }
-
-#include <unistd.h>
 
 void sha256_compress(sha256_ctx *ctx)
 {

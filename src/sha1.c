@@ -3,6 +3,7 @@
 #include <string.h>
 
 #include "bytes.h"
+#include "md.h"
 #include "sha1.h"
 #include "types.h"
 
@@ -16,11 +17,8 @@ static const uint32 h[] = {
 
 void sha1_init(sha1_ctx *ctx)
 {
-  int i;
   ctx->mlen = 0;
-  for (i = 0; i < 5; i += 1) {
-    ctx->h[i] = h[i];
-  }
+  memcpy(ctx->h, h, sizeof ctx->h);
 }
 
 sha1_ctx *sha1_new(void)
@@ -29,6 +27,11 @@ sha1_ctx *sha1_new(void)
   ctx = malloc(sizeof *ctx);
   sha1_init(ctx);
   return ctx;
+}
+
+void sha1_reset(sha1_ctx *ctx)
+{
+  sha1_init(ctx);
 }
 
 static const uint32 k[] = {
@@ -133,51 +136,37 @@ void sha1_compress(sha1_ctx *ctx)
   ctx->h[4] += e;
 }
 
-static uint min(uint a, uint b)
+static byte *md_buffer(md_ctx *ctx)
 {
-  return a < b ? a : b;
+  return ((sha1_ctx *)ctx)->buf;
 }
+
+static void md_compress(md_ctx *ctx)
+{
+  sha1_compress((sha1_ctx *)ctx);
+}
+
+static void md_packmlen(md_ctx *ctx)
+{
+  bytes_pack(md_buffer(ctx) + 56, "> Q", ctx->mlen << 3);
+}
+
+static const md_defn defn = {
+  .buflen = 64,
+  .buffer = &md_buffer,
+  .compress = &md_compress,
+  .mlenoffset = 56,
+  .packmlen = &md_packmlen
+};
 
 void sha1_update(sha1_ctx *ctx, const byte *m, uint mlen)
 {
-  uint offset, take;
-
-  while (mlen > 0) {
-    offset = ctx->mlen % 64;
-    take = min(64 - offset, mlen);
-
-    memcpy(ctx->buf + offset, m, take);
-    ctx->mlen += take;
-
-    m += take;
-    mlen -= take;
-
-    if (ctx->mlen % 64 == 0) {
-      sha1_compress(ctx);
-    }
-  }
+  md_update(&defn, (md_ctx *)ctx, m, mlen);
 }
 
 void sha1_final(sha1_ctx *ctx, byte *h)
 {
-  int i;
-
-  i = ctx->mlen % 64;
-  ctx->buf[i] = 0x80;
-  i = (i + 1) % 64;
-
-  for (; i != 56; i = (i + 1) % 64) {
-    if (i == 0) {
-      sha1_compress(ctx);
-    }
-
-    ctx->buf[i] = 0;
-  }
-
-  bytes_pack(ctx->buf + 56, "> Q", ctx->mlen << 3);
-
-  sha1_compress(ctx);
-
+  md_final(&defn, (md_ctx *)ctx);
   bytes_pack(h, "> 5L",
              ctx->h[0], ctx->h[1], ctx->h[2], ctx->h[3], ctx->h[4]);
 }

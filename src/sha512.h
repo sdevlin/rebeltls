@@ -5,8 +5,8 @@
 
 typedef struct {
   uint mlen;
-  uint32 h[8];
-  byte buf[64];
+  uint64 h[8];
+  byte buf[128];
 } sha512_ctx;
 
 extern void sha512_init(sha512_ctx *ctx);

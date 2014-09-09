@@ -12,6 +12,8 @@ typedef struct {
 extern void sha1_init(sha1_ctx *ctx);
 extern sha1_ctx *sha1_new(void);
 
+extern void sha1_reset(sha1_ctx *ctx);
+
 extern void sha1_compress(sha1_ctx *ctx);
 
 extern void sha1_update(sha1_ctx *ctx, const byte *m, uint mlen);
