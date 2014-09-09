@@ -1,0 +1,6 @@
+bin
+build
+*.o
+*_test
+*.dSYM
+test.log

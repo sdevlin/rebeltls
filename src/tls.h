@@ -1,0 +1,39 @@
+#ifndef TLS_TLS_H
+#define TLS_TLS_H
+
+enum {
+  CE_SERVER,
+  CE_CLIENT
+};
+
+enum {
+  PRFA_TLS_PRF_SHA256
+};
+
+enum bulk_cipher_algorithm {
+  BCA_NULL,
+  BCA_RC4,
+  BCA_3DES,
+  BCA_AES
+};
+
+enum {
+  CT_STREAM,
+  CT_BLOCK,
+  CT_AEAD
+};
+
+enum {
+  MAC_NULL,
+  MAC_HMAC_MD5,
+  MAC_HMAC_SHA1,
+  MAC_HMAC_SHA256,
+  MAC_HMAC_SHA384,
+  MAC_HMAC_SHA512
+};
+
+struct tls_conn {
+
+};
+
+#endif
