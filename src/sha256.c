@@ -31,7 +31,7 @@ void sha256_reset(sha256_ctx *ctx)
   sha256_init(ctx);
 }
 
-static const uint32 k[] = {
+static const uint32 K[] = {
   0x428a2f98, 0x71374491, 0xb5c0fbcf, 0xe9b5dba5,
   0x3956c25b, 0x59f111f1, 0x923f82a4, 0xab1c5ed5,
   0xd807aa98, 0x12835b01, 0x243185be, 0x550c7dc3,
@@ -115,7 +115,7 @@ void sha256_compress(sha256_ctx *ctx)
   for (i = 0; i < 64; i += 1) {
     uint32 T1, T2;
 
-    T1 = h + S1(e) + ch(e, f, g) + k[i] + w[i];
+    T1 = h + S1(e) + ch(e, f, g) + K[i] + w[i];
     T2 = S0(a) + maj(a, b, c);
     h = g;
     g = f;
