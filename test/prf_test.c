@@ -1,6 +1,6 @@
 #include <string.h>
 
-#include "sha256.h"
+#include "hash.h"
 #include "prf.h"
 
 int main(void)

@@ -3,6 +3,7 @@
 #include <string.h>
 
 #include "bytes.h"
+#include "md.h"
 #include "sha256.h"
 #include "types.h"
 
@@ -13,11 +14,8 @@ static const uint32 h[] = {
 
 void sha256_init(sha256_ctx *ctx)
 {
-  int i;
   ctx->mlen = 0;
-  for (i = 0; i < 8; i += 1) {
-    ctx->h[i] = h[i];
-  }
+  memcpy(ctx->h, h, sizeof ctx->h);
 }
 
 sha256_ctx *sha256_new(void)
@@ -136,51 +134,37 @@ void sha256_compress(sha256_ctx *ctx)
   ctx->h[7] += h;
 }
 
-static uint min(uint a, uint b)
+static byte *md_buffer(md_ctx *ctx)
 {
-  return a < b ? a : b;
+  return ((sha256_ctx *)ctx)->buf;
 }
+
+static void md_compress(md_ctx *ctx)
+{
+  sha256_compress((sha256_ctx *)ctx);
+}
+
+static void md_packmlen(md_ctx *ctx)
+{
+  bytes_pack(md_buffer(ctx) + 56, "> Q", ctx->mlen << 3);
+}
+
+static const md_defn defn = {
+  .buflen = 64,
+  .buffer = &md_buffer,
+  .compress = &md_compress,
+  .mlenoffset = 56,
+  .packmlen = &md_packmlen
+};
 
 void sha256_update(sha256_ctx *ctx, const byte *m, uint mlen)
 {
-  uint offset, take;
-
-  while (mlen > 0) {
-    offset = ctx->mlen % 64;
-    take = min(64 - offset, mlen);
-
-    memcpy(ctx->buf + offset, m, take);
-    ctx->mlen += take;
-
-    m += take;
-    mlen -= take;
-
-    if (ctx->mlen % 64 == 0) {
-      sha256_compress(ctx);
-    }
-  }
+  md_update(&defn, (md_ctx *)ctx, m, mlen);
 }
 
 void sha256_final(sha256_ctx *ctx, byte *h)
 {
-  int i;
-
-  i = ctx->mlen % 64;
-  ctx->buf[i] = 0x80;
-  i = (i + 1) % 64;
-
-  for (; i != 56; i = (i + 1) % 64) {
-    if (i == 0) {
-      sha256_compress(ctx);
-    }
-
-    ctx->buf[i] = 0;
-  }
-
-  bytes_pack(ctx->buf + 56, "> Q", ctx->mlen << 3);
-
-  sha256_compress(ctx);
-
+  md_final(&defn, (md_ctx *)ctx);
   bytes_pack(h, "> 8L",
              ctx->h[0], ctx->h[1], ctx->h[2], ctx->h[3],
              ctx->h[4], ctx->h[5], ctx->h[6], ctx->h[7]);

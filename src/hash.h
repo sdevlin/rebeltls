@@ -20,6 +20,10 @@ typedef struct {
   void (*digest)(const byte *m, uint mlen, byte *h);
 } hash_defn;
 
+extern const hash_defn sha1_defn;
+extern const hash_defn sha256_defn;
+extern const hash_defn sha512_defn;
+
 enum {
   HASH_DEFN_SHA1,
   HASH_DEFN_SHA256,

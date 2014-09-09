@@ -27,7 +27,7 @@
     name##_final((name##_ctx *)ctx, h);                     \
   }                                                         \
                                                             \
-  static const hash_defn name##_defn = {                    \
+  const hash_defn name##_defn = {                           \
     .hashlen = hlen,                                        \
     .blocklen = blen,                                       \
     .init = &name##_hash_init,                              \
