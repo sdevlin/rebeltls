@@ -21,12 +21,16 @@ typedef struct {
 } hash_defn;
 
 extern const hash_defn sha1_defn;
+extern const hash_defn sha224_defn;
 extern const hash_defn sha256_defn;
+extern const hash_defn sha384_defn;
 extern const hash_defn sha512_defn;
 
 enum {
   HASH_DEFN_SHA1,
+  HASH_DEFN_SHA224,
   HASH_DEFN_SHA256,
+  HASH_DEFN_SHA384,
   HASH_DEFN_SHA512
 };
 

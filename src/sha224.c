@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "bytes.h"
+#include "bindata.h"
 #include "md.h"
 #include "sha224.h"
 #include "sha256.h"
@@ -48,7 +48,7 @@ static void md_compress(md_ctx *ctx)
 
 static void md_packmlen(md_ctx *ctx)
 {
-  bytes_pack(md_buffer(ctx) + 56, "> Q", ctx->mlen << 3);
+  bindata_pack(md_buffer(ctx) + 56, "> Q", ctx->mlen << 3);
 }
 
 static const md_defn defn = {
@@ -67,9 +67,9 @@ void sha224_update(sha224_ctx *ctx, const byte *m, uint mlen)
 void sha224_final(sha224_ctx *ctx, byte *h)
 {
   md_final(&defn, (md_ctx *)ctx);
-  bytes_pack(h, "> 7L",
-             ctx->h[0], ctx->h[1], ctx->h[2], ctx->h[3],
-             ctx->h[4], ctx->h[5], ctx->h[6]);
+  bindata_pack(h, "> 7L",
+               ctx->h[0], ctx->h[1], ctx->h[2], ctx->h[3],
+               ctx->h[4], ctx->h[5], ctx->h[6]);
 }
 
 void sha224_digest(const byte *m, uint mlen, byte *h)

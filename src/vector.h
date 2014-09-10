@@ -3,9 +3,10 @@
 
 #include "types.h"
 
-struct vector {
-  const byte *buf;
+typedef struct {
+  byte *data;
   uint32 len;
-};
+  uint itemsize;
+} vector;
 
 #endif

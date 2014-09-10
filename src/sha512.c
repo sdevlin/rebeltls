@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "bytes.h"
+#include "bindata.h"
 #include "md.h"
 #include "sha512.h"
 #include "types.h"
@@ -119,11 +119,11 @@ void sha512_compress(sha512_ctx *ctx)
   uint64 W[80];
   uint64 a, b, c, d, e, f, g, h;
 
-  bytes_unpack(ctx->buf, "> QQQQ QQQQ QQQQ QQQQ",
-               &W[0x0], &W[0x1], &W[0x2], &W[0x3],
-               &W[0x4], &W[0x5], &W[0x6], &W[0x7],
-               &W[0x8], &W[0x9], &W[0xa], &W[0xb],
-               &W[0xc], &W[0xd], &W[0xe], &W[0xf]);
+  bindata_unpack(ctx->buf, "> QQQQ QQQQ QQQQ QQQQ",
+                 &W[0x0], &W[0x1], &W[0x2], &W[0x3],
+                 &W[0x4], &W[0x5], &W[0x6], &W[0x7],
+                 &W[0x8], &W[0x9], &W[0xa], &W[0xb],
+                 &W[0xc], &W[0xd], &W[0xe], &W[0xf]);
 
   for (i = 16; i < 80; i += 1) {
     W[i] = s1(W[i-2]) + W[i-7] + s0(W[i-15]) + W[i-16];
@@ -175,7 +175,7 @@ static void md_compress(md_ctx *ctx)
 
 static void md_packmlen(md_ctx *ctx)
 {
-  bytes_pack(md_buffer(ctx) + 112, "> QQ", 0, ctx->mlen << 3);
+  bindata_pack(md_buffer(ctx) + 112, "> QQ", 0, ctx->mlen << 3);
 }
 
 static const md_defn defn = {
@@ -194,9 +194,9 @@ void sha512_update(sha512_ctx *ctx, const byte *m, uint mlen)
 void sha512_final(sha512_ctx *ctx, byte *h)
 {
   md_final(&defn, (md_ctx *)ctx);
-  bytes_pack(h, "> 8Q",
-             ctx->h[0], ctx->h[1], ctx->h[2], ctx->h[3],
-             ctx->h[4], ctx->h[5], ctx->h[6], ctx->h[7]);
+  bindata_pack(h, "> 8Q",
+               ctx->h[0], ctx->h[1], ctx->h[2], ctx->h[3],
+               ctx->h[4], ctx->h[5], ctx->h[6], ctx->h[7]);
 }
 
 void sha512_digest(const byte *m, uint mlen, byte *h)

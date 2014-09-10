@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "bytes.h"
+#include "bindata.h"
 #include "md.h"
 #include "sha1.h"
 #include "types.h"
@@ -34,7 +34,7 @@ void sha1_reset(sha1_ctx *ctx)
   sha1_init(ctx);
 }
 
-static const uint32 k[] = {
+static const uint32 K[] = {
   0x5a827999, 0x5a827999, 0x5a827999, 0x5a827999, 0x5a827999,
   0x5a827999, 0x5a827999, 0x5a827999, 0x5a827999, 0x5a827999,
   0x5a827999, 0x5a827999, 0x5a827999, 0x5a827999, 0x5a827999,
@@ -102,11 +102,11 @@ void sha1_compress(sha1_ctx *ctx)
   uint32 w[80];
   uint32 a, b, c, d, e;
 
-  bytes_unpack(ctx->buf, "> LLLL LLLL LLLL LLLL",
-               &w[0x0], &w[0x1], &w[0x2], &w[0x3],
-               &w[0x4], &w[0x5], &w[0x6], &w[0x7],
-               &w[0x8], &w[0x9], &w[0xa], &w[0xb],
-               &w[0xc], &w[0xd], &w[0xe], &w[0xf]);
+  bindata_unpack(ctx->buf, "> LLLL LLLL LLLL LLLL",
+                 &w[0x0], &w[0x1], &w[0x2], &w[0x3],
+                 &w[0x4], &w[0x5], &w[0x6], &w[0x7],
+                 &w[0x8], &w[0x9], &w[0xa], &w[0xb],
+                 &w[0xc], &w[0xd], &w[0xe], &w[0xf]);
 
   for (i = 16; i < 80; i += 1) {
     w[i] = rotl((w[i-3] ^ w[i-8] ^ w[i-14] ^ w[i-16]), 1);
@@ -121,7 +121,7 @@ void sha1_compress(sha1_ctx *ctx)
   for (i = 0; i < 80; i += 1) {
     uint32 T;
 
-    T = rotl(a, 5) + f[i](b, c, d) + e + k[i] + w[i];
+    T = rotl(a, 5) + f[i](b, c, d) + e + K[i] + w[i];
     e = d;
     d = c;
     c = rotl(b, 30);
@@ -148,7 +148,7 @@ static void md_compress(md_ctx *ctx)
 
 static void md_packmlen(md_ctx *ctx)
 {
-  bytes_pack(md_buffer(ctx) + 56, "> Q", ctx->mlen << 3);
+  bindata_pack(md_buffer(ctx) + 56, "> Q", ctx->mlen << 3);
 }
 
 static const md_defn defn = {
@@ -167,8 +167,8 @@ void sha1_update(sha1_ctx *ctx, const byte *m, uint mlen)
 void sha1_final(sha1_ctx *ctx, byte *h)
 {
   md_final(&defn, (md_ctx *)ctx);
-  bytes_pack(h, "> 5L",
-             ctx->h[0], ctx->h[1], ctx->h[2], ctx->h[3], ctx->h[4]);
+  bindata_pack(h, "> 5L",
+               ctx->h[0], ctx->h[1], ctx->h[2], ctx->h[3], ctx->h[4]);
 }
 
 void sha1_digest(const byte *m, uint mlen, byte *h)
