@@ -5,9 +5,22 @@
 #include "types.h"
 #include "vector.h"
 
+enum {
+  TYPE_SINGLE,
+  TYPE_ARRAY,
+  TYPE_VECTOR
+};
+
 struct cmd {
-  int mod;
-  int act;
+  int cmdtype;
+  int inttype;
+  union {
+    uint64 val;
+    struct {
+      uint32 max;
+      uint32 min;
+    } rng;
+  } coef;
 };
 
 static const char *eatspace(const char *fmt)
@@ -18,6 +31,60 @@ static const char *eatspace(const char *fmt)
 
   return fmt;
 }
+
+static int isinttype(int c)
+{
+  switch (c) {
+  case 'b':
+  case 'B':
+  case 'h':
+  case 'H':
+  case 'l':
+  case 'L':
+  case 'q':
+  case 'Q':
+    return 1;
+  default:
+    return 0;
+  }
+}
+
+static
+
+static struct cmd readcmd(const char **fmtp)
+{
+  struct cmd cmd;
+  const char *fmt;
+  int c;
+
+  cmd = {
+    .cmdtype = TYPE_SINGLE
+  };
+  fmt = eatspace(*fmtp);
+
+  c = *fmt;
+  if (!isinttype(c)) {
+    /* TODO print error message */
+    exit(1);
+  }
+
+  cmd.inttype = c;
+  fmt = eatspace(fmt + 1);
+
+  c = *fmt;
+
+
+ end:
+  *fmtp = fmt;
+  return cmd;
+}
+
+
+
+struct cmd {
+  int mod;
+  int act;
+};
 
 static struct cmd getcmd(const char **fmtp)
 {
@@ -592,14 +659,6 @@ const byte *bindata_vunpack(const byte *buf, const char *fmt, va_list argp)
 
     case 'Q':
       buf = fns->unpack_uint64(buf, va_arg(argp, uint64 *));
-      break;
-
-    case 'v':
-
-      break;
-
-    case 'V':
-
       break;
 
     case '\0':
