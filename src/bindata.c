@@ -1,12 +1,20 @@
+#include <assert.h>
 #include <ctype.h>
 #include <stdarg.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "types.h"
 #include "vector.h"
 
 enum {
-  TYPE_SINGLE,
+  ENDIAN_BIG,
+  ENDIAN_LITTLE,
+  ENDIAN_NATIVE
+  };
+
+enum {
+  TYPE_REGISTER,
   TYPE_ARRAY,
   TYPE_VECTOR
 };
@@ -23,13 +31,37 @@ struct cmd {
   } coef;
 };
 
-static const char *eatspace(const char *fmt)
-{
-  while (*fmt == ' ') {
-    fmt += 1;
-  }
+struct prog {
+  const char *fmt;
+  int endian;
+  uint ncmds;
+  struct cmd *cmds;
+  struct prog *next;
+};
 
-  return fmt;
+static struct prog *prog_list;
+
+static int accept(const char **fmtp, int c)
+{
+  if (**fmtp == c) {
+    *fmtp += 1;
+    return 1;
+  } else {
+    return 0;
+  }
+}
+
+static void expect(const char **fmtp, int c)
+{
+  assert(**fmtp == c);
+  *fmtp += 1;
+}
+
+static void eatspace(const char **fmtp)
+{
+  while (accept(fmtp, ' ') == 1) {
+    /* loop */
+  }
 }
 
 static int isinttype(int c)
@@ -49,18 +81,57 @@ static int isinttype(int c)
   }
 }
 
-static
-
-static struct cmd readcmd(const char **fmtp)
+static uint64 readint(const char **fmtp)
 {
-  struct cmd cmd;
+  const char *fmt;
+  uint64 val;
+  int c;
+
+  fmt = *fmtp;
+  val = 0;
+  for (c = *fmt; isdigit(c); fmt += 1, c = *fmt) {
+    val *= 10;
+    val += c - '0';
+  }
+
+  *fmtp = fmt;
+  return val;
+}
+
+static void readarray(const char **fmtp, struct cmd *cmdp)
+{
+  cmdp->cmdtype = TYPE_ARRAY;
+  eatspace(fmtp);
+  expect(fmtp, '[');
+  eatspace(fmtp);
+  cmdp->coef.val = readint(fmtp);
+  eatspace(fmtp);
+  expect(fmtp, ']');
+}
+
+static void readvector(const char **fmtp, struct cmd *cmdp)
+{
+  cmdp->cmdtype = TYPE_VECTOR;
+  eatspace(fmtp);
+  expect(fmtp, '<');
+  eatspace(fmtp);
+  cmdp->coef.rng.min = readint(fmtp);
+  eatspace(fmtp);
+  expect(fmtp, '.');
+  expect(fmtp, '.');
+  eatspace(fmtp);
+  cmdp->coef.rng.max = readint(fmtp);
+  eatspace(fmtp);
+  expect(fmtp, '>');
+}
+
+static void readcmd(const char **fmtp, struct cmd *cmdp)
+{
   const char *fmt;
   int c;
 
-  cmd = {
-    .cmdtype = TYPE_SINGLE
-  };
-  fmt = eatspace(*fmtp);
+  fmt = *fmtp;
+  eatspace(&fmt);
 
   c = *fmt;
   if (!isinttype(c)) {
@@ -68,47 +139,75 @@ static struct cmd readcmd(const char **fmtp)
     exit(1);
   }
 
-  cmd.inttype = c;
-  fmt = eatspace(fmt + 1);
+  cmdp->inttype = c;
+  fmt += 1;
+  eatspace(&fmt);
 
   c = *fmt;
-
-
- end:
-  *fmtp = fmt;
-  return cmd;
-}
-
-
-
-struct cmd {
-  int mod;
-  int act;
-};
-
-static struct cmd getcmd(const char **fmtp)
-{
-  struct cmd cmd = { 1, 0 };
-  const char *fmt;
-
-  fmt = eatspace(*fmtp);
-
-  if (isdigit(*fmt)) {
-    cmd.mod = 0;
-    while (isdigit(*fmt)) {
-      cmd.mod *= 10;
-      cmd.mod += (*fmt) - '0';
-      fmt += 1;
+  if (c == '[') {
+    readarray(&fmt, cmdp);
+  } else if (c == '<') {
+    readvector(&fmt, cmdp);
+  } else {
+    cmdp->cmdtype = TYPE_REGISTER;
+    if (isdigit(c)) {
+      cmdp->coef.val = readint(&fmt);
+    } else {
+      cmdp->coef.val = 1;
     }
   }
 
-  fmt = eatspace(fmt);
+  *fmtp = fmt;
+}
 
-  cmd.act = *fmt;
+static struct prog *lookup(const char *fmt)
+{
+  struct prog *prog;
 
-  *fmtp = fmt + 1;
+  for (prog = prog_list; prog != NULL; prog = prog->next) {
+    if (prog->fmt == fmt) {
+      return prog;
+    }
+  }
 
-  return cmd;
+  return NULL;
+}
+
+static const struct prog *compile(const char *fmt)
+{
+  struct prog *prog;
+  struct cmd *cmd;
+
+  prog = lookup(fmt);
+  if (prog != NULL) {
+    return prog;
+  }
+
+  prog = malloc(sizeof *prog);
+  prog->fmt = fmt;
+  prog->next = prog_list;
+  prog_list = prog;
+
+  eatspace(&fmt);
+
+  if (accept(&fmt, '<')) {
+    prog->endian = ENDIAN_LITTLE;
+  } else if (accept(&fmt, '>') || accept(&fmt, '!')) {
+    prog->endian = ENDIAN_BIG;
+  } else if (accept(&fmt, '=') || 1) {
+    prog->endian = ENDIAN_NATIVE;
+  }
+
+  prog->ncmds = 0;
+  prog->cmds = malloc(strlen(fmt) * (sizeof (struct cmd)));
+
+  for (cmd = prog->cmds; *fmt != '\0'; cmd += 1) {
+    readcmd(&fmt, cmd);
+  }
+
+  prog->cmds = realloc(prog->cmds, prog->ncmds * (sizeof (struct cmd)));
+
+  return prog;
 }
 
 static byte *pack_int8(byte *buf, int8 n)
@@ -319,69 +418,109 @@ static struct pack_fns be_pack_fns = {
   .pack_uint64 = &be_pack_uint64
 };
 
-#define PACKN(ptype, atype)                            \
-  for (i = 0; i < cmd.mod; i += 1)                     \
-    buf = fns->pack_##ptype(buf, va_arg(argp, atype))
+#define PACK_SWITCH                               \
+  switch (inttype) {                              \
+    PACK_CASE('b', int8, int);                    \
+    PACK_CASE('B', uint8, unsigned);              \
+    PACK_CASE('h', int16, int);                   \
+    PACK_CASE('H', uint16, unsigned);             \
+    PACK_CASE('l', int32, long);                  \
+    PACK_CASE('L', uint32, unsigned long);        \
+    PACK_CASE('q', int64, long long);             \
+    PACK_CASE('Q', uint64, unsigned long long);   \
+  default:                                        \
+    exit(1);                                      \
+  }
+
+#define PACK_CASE(itype, ptype, atype)                  \
+  case itype:                                           \
+  for (i = 0; i < count; i += 1) {                      \
+    buf = fns->pack_##ptype(buf, va_arg(argp, atype));  \
+  }                                                     \
+  return buf;
+
+static byte *pack_register(byte *buf, int inttype, uint64 count,
+                           struct pack_fns *fns, va_list argp)
+{
+  uint i;
+  PACK_SWITCH
+}
+
+#undef PACK_CASE
+
+#define PACK_CASE(itype, ptype, atype)          \
+  case itype:                                   \
+  {                                             \
+    ptype *p = va_arg(argp, ptype *);           \
+    for (i = 0; i < len; i += 1) {              \
+      buf = fns->pack_##ptype(buf, p[i]);       \
+    }                                           \
+    return buf;                                 \
+  }
+
+static byte *pack_array(byte *buf, int inttype, uint64 len,
+                        struct pack_fns *fns, va_list argp)
+{
+  uint i;
+  PACK_SWITCH
+}
+
+#undef PACK_CASE
+
+#define PACK_CASE(itype, ptype, atype)          \
+  case itype:                                   \
+  {                                             \
+    ptype *p = vec->data;                       \
+    for (i = 0; ; );                            \
+  }
+
+static byte *pack_vector(byte *buf, int inttype, uint32 min, uint32 max,
+                         struct pack_fns *fns, va_list argp)
+{
+  uint i;
+  vector *vec;
+  vec = va_arg(argp, vector *);
+  assert(vec->len >= min);
+  assert(vec->len <= max);
+  PACK_SWITCH
+}
 
 byte *bindata_vpack(byte *buf, const char *fmt, va_list argp)
 {
-  struct cmd cmd;
-  struct pack_fns *fns = &le_pack_fns;
+  struct prog *prog;
+  struct cmd *cmd;
+  struct pack_fns *fns;
   int i;
 
-  for (; ; ) {
-    cmd = getcmd(&fmt);
+  prog = compile(fmt);
 
-    switch (cmd.act) {
+  switch (prog->endian) {
+  case ENDIAN_NATIVE:
+    fns = &nat_pack_fns;
+    break;
+  case ENDIAN_LITTLE:
+    fns = *le_pack_fns;
+    break;
+  case ENDIAN_BIG:
+    fns = *be_pack_fns;
+    break;
+  default:
+    exit(1);
+  }
 
-    case '=':
-      fns = &nat_pack_fns;
+  for (i = 0; i < prog->ncmds; i += 1) {
+    cmd = prog->cmds + i;
+
+    switch (cmd->cmdtype) {
+    case TYPE_REGISTER:
+      pack_register();
       break;
-
-    case '<':
-      fns = &le_pack_fns;
+    case TYPE_ARRAY:
+      pack_array();
       break;
-
-    case '>':
-    case '!':
-      fns = &be_pack_fns;
+    case TYPE_VECTOR:
+      pack_vector();
       break;
-
-    case 'b':
-      PACKN(int8, int);
-      break;
-
-    case 'B':
-      PACKN(uint8, unsigned);
-      break;
-
-    case 'h':
-      PACKN(int16, int);
-      break;
-
-    case 'H':
-      PACKN(uint16, unsigned);
-      break;
-
-    case 'l':
-      PACKN(int32, long);
-      break;
-
-    case 'L':
-      PACKN(uint32, unsigned long);
-      break;
-
-    case 'q':
-      PACKN(int64, long long);
-      break;
-
-    case 'Q':
-      PACKN(uint64, unsigned long long);
-      break;
-
-    case '\0':
-      return buf;
-
     default:
       exit(1);
     }
