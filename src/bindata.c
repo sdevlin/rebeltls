@@ -1,214 +1,10 @@
 #include <assert.h>
-#include <ctype.h>
 #include <stdarg.h>
 #include <stdlib.h>
-#include <string.h>
 
+#include "bdlang.h"
 #include "types.h"
 #include "vector.h"
-
-enum {
-  ENDIAN_BIG,
-  ENDIAN_LITTLE,
-  ENDIAN_NATIVE
-};
-
-enum {
-  TYPE_REGISTER,
-  TYPE_ARRAY,
-  TYPE_VECTOR
-};
-
-struct cmd {
-  int cmdtype;
-  int inttype;
-  union {
-    uint64 val;
-    struct {
-      uint32 max;
-      uint32 min;
-    } rng;
-  } coef;
-};
-
-struct prog {
-  const char *fmt;
-  int endian;
-  uint ncmds;
-  struct cmd *cmds;
-  struct prog *next;
-};
-
-static struct prog *prog_list;
-
-static int accept(const char **fmtp, int c)
-{
-  if (**fmtp == c) {
-    *fmtp += 1;
-    return 1;
-  } else {
-    return 0;
-  }
-}
-
-static void expect(const char **fmtp, int c)
-{
-  assert(**fmtp == c);
-  *fmtp += 1;
-}
-
-static void eatspace(const char **fmtp)
-{
-  while (accept(fmtp, ' ') == 1) {
-    /* loop */
-  }
-}
-
-static int isinttype(int c)
-{
-  switch (c) {
-  case 'b':
-  case 'B':
-  case 'h':
-  case 'H':
-  case 'l':
-  case 'L':
-  case 'q':
-  case 'Q':
-    return 1;
-  default:
-    return 0;
-  }
-}
-
-static uint64 readint(const char **fmtp)
-{
-  const char *fmt;
-  uint64 val;
-  int c;
-
-  fmt = *fmtp;
-  val = 0;
-  for (c = *fmt; isdigit(c); fmt += 1, c = *fmt) {
-    val *= 10;
-    val += c - '0';
-  }
-
-  *fmtp = fmt;
-  return val;
-}
-
-static void readarray(const char **fmtp, struct cmd *cmdp)
-{
-  cmdp->cmdtype = TYPE_ARRAY;
-  eatspace(fmtp);
-  expect(fmtp, '[');
-  eatspace(fmtp);
-  cmdp->coef.val = readint(fmtp);
-  eatspace(fmtp);
-  expect(fmtp, ']');
-}
-
-static void readvector(const char **fmtp, struct cmd *cmdp)
-{
-  cmdp->cmdtype = TYPE_VECTOR;
-  eatspace(fmtp);
-  expect(fmtp, '<');
-  eatspace(fmtp);
-  cmdp->coef.rng.min = readint(fmtp);
-  eatspace(fmtp);
-  expect(fmtp, '.');
-  expect(fmtp, '.');
-  eatspace(fmtp);
-  cmdp->coef.rng.max = readint(fmtp);
-  eatspace(fmtp);
-  expect(fmtp, '>');
-}
-
-static void readcmd(const char **fmtp, struct cmd *cmdp)
-{
-  const char *fmt;
-  int c;
-
-  fmt = *fmtp;
-  eatspace(&fmt);
-
-  c = *fmt;
-  if (!isinttype(c)) {
-    /* TODO print error message */
-    exit(1);
-  }
-
-  cmdp->inttype = c;
-  fmt += 1;
-  eatspace(&fmt);
-
-  c = *fmt;
-  if (c == '[') {
-    readarray(&fmt, cmdp);
-  } else if (c == '<') {
-    readvector(&fmt, cmdp);
-  } else {
-    cmdp->cmdtype = TYPE_REGISTER;
-    if (isdigit(c)) {
-      cmdp->coef.val = readint(&fmt);
-    } else {
-      cmdp->coef.val = 1;
-    }
-  }
-
-  *fmtp = fmt;
-}
-
-static struct prog *lookup(const char *fmt)
-{
-  struct prog *prog;
-
-  for (prog = prog_list; prog != NULL; prog = prog->next) {
-    if (prog->fmt == fmt) {
-      return prog;
-    }
-  }
-
-  return NULL;
-}
-
-static const struct prog *compile(const char *fmt)
-{
-  struct prog *prog;
-  struct cmd *cmd;
-
-  prog = lookup(fmt);
-  if (prog != NULL) {
-    return prog;
-  }
-
-  prog = malloc(sizeof *prog);
-  prog->fmt = fmt;
-  prog->next = prog_list;
-  prog_list = prog;
-
-  eatspace(&fmt);
-
-  if (accept(&fmt, '<')) {
-    prog->endian = ENDIAN_LITTLE;
-  } else if (accept(&fmt, '>') || accept(&fmt, '!')) {
-    prog->endian = ENDIAN_BIG;
-  } else if (accept(&fmt, '=') || 1) {
-    prog->endian = ENDIAN_NATIVE;
-  }
-
-  prog->ncmds = 0;
-  prog->cmds = malloc(strlen(fmt) * (sizeof (struct cmd)));
-
-  for (cmd = prog->cmds; *fmt != '\0'; cmd += 1, prog->ncmds += 1) {
-    readcmd(&fmt, cmd);
-  }
-
-  prog->cmds = realloc(prog->cmds, prog->ncmds * (sizeof (struct cmd)));
-
-  return prog;
-}
 
 static byte *pack_int8(byte *buf, int8 n)
 {
@@ -497,12 +293,12 @@ static byte *pack_vector(byte *buf, int inttype, uint32 min, uint32 max,
 
 byte *bindata_vpack(byte *buf, const char *fmt, va_list argp)
 {
-  const struct prog *prog;
-  struct cmd *cmd;
+  const struct bdprog *prog;
+  struct bdcmd *cmd;
   struct pack_fns *fns;
   uint i;
 
-  prog = compile(fmt);
+  prog = bdlang_compile(fmt);
 
   switch (prog->endian) {
   case ENDIAN_NATIVE:
