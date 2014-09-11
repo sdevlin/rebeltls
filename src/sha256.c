@@ -168,9 +168,7 @@ void sha256_update(sha256_ctx *ctx, const byte *m, uint mlen)
 void sha256_final(sha256_ctx *ctx, byte *h)
 {
   md_final(&defn, (md_ctx *)ctx);
-  bindata_pack(h, "> 8L",
-               ctx->h[0], ctx->h[1], ctx->h[2], ctx->h[3],
-               ctx->h[4], ctx->h[5], ctx->h[6], ctx->h[7]);
+  bindata_pack(h, "> L[8]", ctx->h);
 }
 
 void sha256_digest(const byte *m, uint mlen, byte *h)

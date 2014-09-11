@@ -11,7 +11,7 @@ enum {
   ENDIAN_BIG,
   ENDIAN_LITTLE,
   ENDIAN_NATIVE
-  };
+};
 
 enum {
   TYPE_REGISTER,
@@ -201,7 +201,7 @@ static const struct prog *compile(const char *fmt)
   prog->ncmds = 0;
   prog->cmds = malloc(strlen(fmt) * (sizeof (struct cmd)));
 
-  for (cmd = prog->cmds; *fmt != '\0'; cmd += 1) {
+  for (cmd = prog->cmds; *fmt != '\0'; cmd += 1, prog->ncmds += 1) {
     readcmd(&fmt, cmd);
   }
 
@@ -419,78 +419,88 @@ static struct pack_fns be_pack_fns = {
 };
 
 #define PACK_SWITCH                               \
-  switch (inttype) {                              \
-    PACK_CASE('b', int8, int);                    \
-    PACK_CASE('B', uint8, unsigned);              \
-    PACK_CASE('h', int16, int);                   \
-    PACK_CASE('H', uint16, unsigned);             \
-    PACK_CASE('l', int32, long);                  \
-    PACK_CASE('L', uint32, unsigned long);        \
-    PACK_CASE('q', int64, long long);             \
-    PACK_CASE('Q', uint64, unsigned long long);   \
-  default:                                        \
-    exit(1);                                      \
-  }
+  do {                                            \
+    switch (inttype) {                            \
+      PACK_CASE('b', int8, int);                  \
+      PACK_CASE('B', uint8, unsigned);            \
+      PACK_CASE('h', int16, int);                 \
+      PACK_CASE('H', uint16, unsigned);           \
+      PACK_CASE('l', int32, long);                \
+      PACK_CASE('L', uint32, unsigned long);      \
+      PACK_CASE('q', int64, long long);           \
+      PACK_CASE('Q', uint64, unsigned long long); \
+    default:                                      \
+      exit(1);                                    \
+    }                                             \
+  } while (0)
 
-#define PACK_CASE(itype, ptype, atype)                  \
-  case itype:                                           \
+#define PACK_CASE(c, ptype, atype)                      \
+  case c:                                               \
   for (i = 0; i < count; i += 1) {                      \
     buf = fns->pack_##ptype(buf, va_arg(argp, atype));  \
   }                                                     \
-  return buf;
+  break;
 
 static byte *pack_register(byte *buf, int inttype, uint64 count,
                            struct pack_fns *fns, va_list argp)
 {
   uint i;
-  PACK_SWITCH
+  PACK_SWITCH;
+  return buf;
 }
 
 #undef PACK_CASE
 
-#define PACK_CASE(itype, ptype, atype)          \
-  case itype:                                   \
+#define PACK_CASE(c, ptype, atype)              \
+  case c:                                       \
   {                                             \
     ptype *p = va_arg(argp, ptype *);           \
     for (i = 0; i < len; i += 1) {              \
       buf = fns->pack_##ptype(buf, p[i]);       \
     }                                           \
-    return buf;                                 \
+    break;                                      \
   }
 
 static byte *pack_array(byte *buf, int inttype, uint64 len,
                         struct pack_fns *fns, va_list argp)
 {
   uint i;
-  PACK_SWITCH
+  PACK_SWITCH;
+  return buf;
 }
 
 #undef PACK_CASE
 
-#define PACK_CASE(itype, ptype, atype)          \
-  case itype:                                   \
+#define PACK_CASE(c, ptype, atype)              \
+  case c:                                       \
   {                                             \
     ptype *p = vec->data;                       \
-    for (i = 0; ; );                            \
+    len = (sizeof *p) / vec->len;               \
+    for (i = 0; i < len; i += 1) {              \
+      buf = fns->pack_##ptype(buf, *p);         \
+    }                                           \
+    break;                                      \
   }
 
 static byte *pack_vector(byte *buf, int inttype, uint32 min, uint32 max,
                          struct pack_fns *fns, va_list argp)
 {
   uint i;
-  vector *vec;
-  vec = va_arg(argp, vector *);
+  uint len;
+  struct vector *vec;
+  vec = va_arg(argp, struct vector *);
   assert(vec->len >= min);
   assert(vec->len <= max);
-  PACK_SWITCH
+  PACK_SWITCH;
+  return buf;
 }
 
 byte *bindata_vpack(byte *buf, const char *fmt, va_list argp)
 {
-  struct prog *prog;
+  const struct prog *prog;
   struct cmd *cmd;
   struct pack_fns *fns;
-  int i;
+  uint i;
 
   prog = compile(fmt);
 
@@ -499,10 +509,10 @@ byte *bindata_vpack(byte *buf, const char *fmt, va_list argp)
     fns = &nat_pack_fns;
     break;
   case ENDIAN_LITTLE:
-    fns = *le_pack_fns;
+    fns = &le_pack_fns;
     break;
   case ENDIAN_BIG:
-    fns = *be_pack_fns;
+    fns = &be_pack_fns;
     break;
   default:
     exit(1);
@@ -513,18 +523,22 @@ byte *bindata_vpack(byte *buf, const char *fmt, va_list argp)
 
     switch (cmd->cmdtype) {
     case TYPE_REGISTER:
-      pack_register();
+      buf = pack_register(buf, cmd->inttype, cmd->coef.val, fns, argp);
       break;
     case TYPE_ARRAY:
-      pack_array();
+      buf = pack_array(buf, cmd->inttype, cmd->coef.val, fns, argp);
       break;
     case TYPE_VECTOR:
-      pack_vector();
+      buf = pack_vector(buf, cmd->inttype,
+                        cmd->coef.rng.min, cmd->coef.rng.max,
+                        fns, argp);
       break;
     default:
       exit(1);
     }
   }
+
+  return buf;
 }
 
 byte *bindata_pack(byte *buf, const char *fmt, ...)

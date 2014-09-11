@@ -167,8 +167,7 @@ void sha1_update(sha1_ctx *ctx, const byte *m, uint mlen)
 void sha1_final(sha1_ctx *ctx, byte *h)
 {
   md_final(&defn, (md_ctx *)ctx);
-  bindata_pack(h, "> 5L",
-               ctx->h[0], ctx->h[1], ctx->h[2], ctx->h[3], ctx->h[4]);
+  bindata_pack(h, "> L[5]", ctx->h);
 }
 
 void sha1_digest(const byte *m, uint mlen, byte *h)

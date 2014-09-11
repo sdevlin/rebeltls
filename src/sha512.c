@@ -194,9 +194,7 @@ void sha512_update(sha512_ctx *ctx, const byte *m, uint mlen)
 void sha512_final(sha512_ctx *ctx, byte *h)
 {
   md_final(&defn, (md_ctx *)ctx);
-  bindata_pack(h, "> 8Q",
-               ctx->h[0], ctx->h[1], ctx->h[2], ctx->h[3],
-               ctx->h[4], ctx->h[5], ctx->h[6], ctx->h[7]);
+  bindata_pack(h, "> Q[8]", ctx->h);
 }
 
 void sha512_digest(const byte *m, uint mlen, byte *h)

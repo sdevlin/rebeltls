@@ -4,7 +4,7 @@
 #include "types.h"
 
 struct vector {
-  byte *data;
+  void *data;
   uint32 len;
 };
 

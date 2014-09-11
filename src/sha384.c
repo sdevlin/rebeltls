@@ -70,9 +70,7 @@ void sha384_update(sha384_ctx *ctx, const byte *m, uint mlen)
 void sha384_final(sha384_ctx *ctx, byte *h)
 {
   md_final(&defn, (md_ctx *)ctx);
-  bindata_pack(h, "> 6Q",
-               ctx->h[0], ctx->h[1], ctx->h[2],
-               ctx->h[3], ctx->h[4], ctx->h[5]);
+  bindata_pack(h, "> Q[6]", ctx->h);
 }
 
 void sha384_digest(const byte *m, uint mlen, byte *h)
