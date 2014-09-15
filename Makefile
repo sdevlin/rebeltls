@@ -22,7 +22,7 @@ dev: all
 
 $(TESTS): $(A_TARGET)
 
-test: CFLAGS += $(A_TARGET) -Isrc
+test: CFLAGS += -Isrc
 test: $(TESTS)
 	sh ./test/runtests.sh
 
@@ -35,22 +35,17 @@ test: $(TESTS)
 # 	install -D $(TARGET) $(PREFIX)/$(TARGET)
 # 	install -m 644 -D $(STDLIB) $(PREFIX)/$(STDLIB)
 
-$(A_TARGET): build
 $(A_TARGET): $(LIB_OBJS)
+	@mkdir -p build
 	$(AR) -rcs $@ $(LIB_OBJS)
 
-$(SO_TARGET): build
 $(SO_TARGET): $(LIB_OBJS)
+	@mkdir -p build
 	$(CC) $(LDLIBS) -shared -o $@ $(LIB_OBJS)
 
-$(BIN_TARGET): $(MAIN_OBJ) $(A_TARGET) bin
-	$(CC) $(LDLIBS) -o $@ $(MAIN_OBJ) $(A_TARGET)
-
-build:
-	@mkdir -p build
-
-bin:
+$(BIN_TARGET): $(MAIN_OBJ) $(A_TARGET)
 	@mkdir -p bin
+	$(CC) $(LDLIBS) -o $@ $(MAIN_OBJ) $(A_TARGET)
 
 -include $(DEPS)
 
@@ -63,7 +58,11 @@ bin:
 	@$(RM) $*.d.tmp
 
 clean:
-	$(RM) $(TARGETS) $(TESTS) || true
-	$(RM) $(OBJS) $(DEPS) || true
+	$(RM) $(TARGETS) || true
+	$(RM) $(TESTS) || true
+	$(RM) $(OBJS) || true
+	$(RM) $(DEPS) || true
+	$(RM) *.log || true
+	find . -name '*.dSYM' | xargs rm -rf
 
 .PHONY: dev test release install clean
