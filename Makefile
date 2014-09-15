@@ -1,47 +1,69 @@
-CFLAGS=-Wall -Wextra -Werror -pedantic -std=c99 -O2
-LIBS=-lgmp $(OPTLIBS)
+CFLAGS = -Wall -Wextra -Werror -pedantic -std=c99 -O2
+LDLIBS = -lgmp
 
-SOURCES=$(wildcard src/**/*.c src/*.c)
-OBJECTS=$(patsubst %.c,%.o,$(SOURCES))
+A_TARGET = build/librebeltls.a
+SO_TARGET = $(patsubst %.a,%.so,$(A_TARGET))
+BIN_TARGET = bin/rebeltls
+TARGETS = $(A_TARGET) $(SO_TARGET) $(BIN_TARGET)
 
-TEST_SRC=$(wildcard test/*_test.c)
-TESTS=$(patsubst %.c,%,$(TEST_SRC))
+SRCS = $(wildcard src/**/*.c src/*.c)
+OBJS = $(SRCS:.c=.o)
+DEPS = $(SRCS:.c=.d)
 
-BIN_TARGET=bin/tls
-A_TARGET=build/libtls.a
-SO_TARGET=$(patsubst %.a,%.so,$(A_TARGET))
+MAIN_OBJ = src/main.o
+LIB_OBJS = $(filter-out $(MAIN_OBJ),$(OBJS))
 
-all : $(BIN_TARGET) $(A_TARGET) $(SO_TARGET) test
+TESTS = $(patsubst %.c,%,$(wildcard test/*.c))
 
-dev : CFLAGS=-g -Isrc -Wall -Wextra -Werror -pedantic -std=c99 $(OPTFLAGS)
-dev : all
+all: $(TARGETS) test
 
-$(BIN_TARGET) : build $(OBJECTS)
-	$(CC) $(LIBS) -o $@ $(OBJECTS)
+dev: CFLAGS += -g
+dev: all
 
-$(A_TARGET) : CFLAGS += -fPIC
-$(A_TARGET) : build $(OBJECTS)
-	ar rcs $@ $(OBJECTS)
-	ranlib $@
+$(TESTS): $(A_TARGET)
 
-$(SO_TARGET) : build $(OBJECTS)
-	$(CC) $(LIBS) -shared -o $@ $(OBJECTS)
-
-build :
-	@mkdir -p build
-	@mkdir -p bin
-
-.PHONY : test
-test : CFLAGS += $(A_TARGET)
-test : $(TESTS)
+test: CFLAGS += $(A_TARGET) -Isrc
+test: $(TESTS)
 	sh ./test/runtests.sh
 
-clean :
-	rm -rf build $(OBJECTS) $(TESTS)
-	rm -f tests/tests.log
-	find . -name "*.gc*" -exec rm {} \;
-	rm -rf `find . -name "*.dSYM" -print`
+# release: PREFIX = $(HOME)/.local
+# release: CFLAGS += -O3
+# release: $(TARGET)
 
-install : all
-	install -d $(DESTDIR)/$(PREFIX)/lib/
-	install $(A_TARGET) $(DESTDIR)/$(PREFIX)/lib/
+# install: PREFIX = $(HOME)/.local
+# install: release
+# 	install -D $(TARGET) $(PREFIX)/$(TARGET)
+# 	install -m 644 -D $(STDLIB) $(PREFIX)/$(STDLIB)
+
+$(A_TARGET): build
+$(A_TARGET): $(LIB_OBJS)
+	$(AR) -rcs $@ $(LIB_OBJS)
+
+$(SO_TARGET): build
+$(SO_TARGET): $(LIB_OBJS)
+	$(CC) $(LDLIBS) -shared -o $@ $(LIB_OBJS)
+
+$(BIN_TARGET): $(MAIN_OBJ) $(A_TARGET) bin
+	$(CC) $(LDLIBS) -o $@ $(MAIN_OBJ) $(A_TARGET)
+
+build:
+	@mkdir -p build
+
+bin:
+	@mkdir -p bin
+
+-include $(DEPS)
+
+# the black magic after the first line constructs the dep files correctly
+%.d: %.c
+	@$(CC) $(CFLAGS) -MM $*.c >$*.d
+	@mv -f $*.d $*.d.tmp
+	@sed -e 's|.*:|$*.o:|' <$*.d.tmp >$*.d
+	@sed -e 's/.*://' -e 's/\\$$//' <$*.d.tmp | fmt -1 | sed -e 's/^ *//' -e 's/$$/:/' >>$*.d
+	@$(RM) $*.d.tmp
+
+clean:
+	$(RM) $(TARGETS) $(TESTS) || true
+	$(RM) $(OBJS) $(DEPS) || true
+
+.PHONY: dev test release install clean

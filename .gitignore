@@ -1,6 +1,7 @@
 bin
 build
 *.o
+*.d
 *_test
 *.dSYM
 test.log

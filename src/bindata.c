@@ -1,8 +1,8 @@
-#include <assert.h>
 #include <stdarg.h>
 #include <stdlib.h>
 
 #include "bdlang.h"
+#include "debug.h"
 #include "types.h"
 #include "vector.h"
 
@@ -56,6 +56,29 @@ static byte *be_pack_uint16(byte *buf, uint16 n)
   buf[1] = 0xff & n;
   buf[0] = 0xff & (n >> 8);
   return buf + sizeof n;
+}
+
+static byte *nat_pack_uint24(__attribute__((unused)) byte *buf,
+                             __attribute__((unused)) uint32 n)
+{
+  debug_error("bindata: native pack uint24");
+  return NULL;
+}
+
+static byte *le_pack_uint24(byte *buf, uint32 n)
+{
+  buf[0] = 0xff & n;
+  buf[1] = 0xff & (n >> 8);
+  buf[2] = 0xff & (n >> 16);
+  return buf + 3;
+}
+
+static byte *be_pack_uint24(byte *buf, uint32 n)
+{
+  buf[2] = 0xff & n;
+  buf[1] = 0xff & (n >> 8);
+  buf[0] = 0xff & (n >> 16);
+  return buf + 3;
 }
 
 static byte *nat_pack_int32(byte *buf, int32 n)
@@ -175,6 +198,7 @@ struct pack_fns {
   byte *(*pack_uint8)(byte *, uint8);
   byte *(*pack_int16)(byte *, int16);
   byte *(*pack_uint16)(byte *, uint16);
+  byte *(*pack_uint24)(byte *, uint32);
   byte *(*pack_int32)(byte *, int32);
   byte *(*pack_uint32)(byte *, uint32);
   byte *(*pack_int64)(byte *, int64);
@@ -186,6 +210,7 @@ static struct pack_fns nat_pack_fns = {
   .pack_uint8 = &pack_uint8,
   .pack_int16 = &nat_pack_int16,
   .pack_uint16 = &nat_pack_uint16,
+  .pack_uint24 = &nat_pack_uint24,
   .pack_int32 = &nat_pack_int32,
   .pack_uint32 = &nat_pack_uint32,
   .pack_int64 = &nat_pack_int64,
@@ -197,6 +222,7 @@ static struct pack_fns le_pack_fns = {
   .pack_uint8 = &pack_uint8,
   .pack_int16 = &le_pack_int16,
   .pack_uint16 = &le_pack_uint16,
+  .pack_uint24 = &le_pack_uint24,
   .pack_int32 = &le_pack_int32,
   .pack_uint32 = &le_pack_uint32,
   .pack_int64 = &le_pack_int64,
@@ -208,6 +234,7 @@ static struct pack_fns be_pack_fns = {
   .pack_uint8 = &pack_uint8,
   .pack_int16 = &be_pack_int16,
   .pack_uint16 = &be_pack_uint16,
+  .pack_uint24 = &be_pack_uint24,
   .pack_int32 = &be_pack_int32,
   .pack_uint32 = &be_pack_uint32,
   .pack_int64 = &be_pack_int64,
@@ -285,8 +312,9 @@ static byte *pack_vector(byte *buf, int inttype, uint32 min, uint32 max,
   uint len;
   struct vector *vec;
   vec = va_arg(argp, struct vector *);
-  assert(vec->len >= min);
-  assert(vec->len <= max);
+  debug_assert(vec->len >= min && vec->len <= max,
+               "bindata: vector length %u, expected <%u..%u>",
+               vec->len, min, max);
   PACK_SWITCH;
   return buf;
 }

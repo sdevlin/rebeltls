@@ -1,12 +1,10 @@
-#include <assert.h>
 #include <ctype.h>
 #include <stdlib.h>
 #include <string.h>
 
 #include "bdlang.h"
+#include "debug.h"
 #include "types.h"
-
-static struct bdprog *prog_list;
 
 static int accept(const char **srcp, int c)
 {
@@ -20,7 +18,7 @@ static int accept(const char **srcp, int c)
 
 static void expect(const char **srcp, int c)
 {
-  assert(**srcp == c);
+  debug_assert(**srcp == c, "bdlang: expected '%c', got '%c'", c, **srcp);
   *srcp += 1;
 }
 
@@ -38,6 +36,7 @@ static int isinttype(int c)
   case 'B':
   case 'h':
   case 'H':
+  case 'T':
   case 'l':
   case 'L':
   case 'q':
@@ -126,6 +125,8 @@ static void readcmd(const char **srcp, struct bdcmd *cmdp)
 
   *srcp = src;
 }
+
+static struct bdprog *prog_list;
 
 static struct bdprog *lookup(const char *src)
 {
