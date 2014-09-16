@@ -7,9 +7,12 @@
 #include <arpa/inet.h>
 #include <netinet/in.h>
 
+#include "bindata.h"
+#include "io.h"
 #include "record.h"
 #include "types.h"
 #include "random.h"
+#include "vector.h"
 
 static int setup(void);
 
@@ -20,6 +23,7 @@ static struct record rec;
 int main(void)
 {
   int fd;
+  io io;
 
   struct {
     uint8 msg_type;
@@ -32,13 +36,15 @@ int main(void)
       uint32 gmt_unix_time;
       byte random_bytes[28];
     } random;
-    uint16 session_id;
+    byte session_id[23];
   } client_hello;
+
+  struct vector sessid_vec;
 
   client_hello.msg_type = 1;
 
   /* serialize as 24-bit */
-  client_hello.length = sizeof client_hello;
+  client_hello.length = 0x38;
 
   client_hello.protocol_version.major = 3;
   client_hello.protocol_version.minor = 1;
@@ -47,18 +53,26 @@ int main(void)
   random_bytes(client_hello.random.random_bytes,
                sizeof client_hello.random.random_bytes);
 
-  client_hello.session_id = 0;
-
+  random_bytes(client_hello.session_id, sizeof client_hello.session_id);
+  sessid_vec = vector_new(client_hello.session_id,
+                          sizeof client_hello.session_id);
 
   rec.content_type = 22;
   rec.protocol_version.major = 3;
   rec.protocol_version.minor = 1;
-  /* rec.length = (sizeof payload) - 1; */
-  /* memcpy(rec.fragment, payload, rec.length); */
+  rec.length = bindata_pack(rec.fragment, "! B T BB LB[28] B<0..32>",
+                            client_hello.msg_type,
+                            client_hello.length,
+                            client_hello.protocol_version.major,
+                            client_hello.protocol_version.minor,
+                            client_hello.random.gmt_unix_time,
+                            client_hello.random.random_bytes,
+                            &sessid_vec);
 
   fd = setup();
+  io_fileinit(&io, STDOUT_FILENO);
 
-  record_write(fd, &rec);
+  record_write(&io, &rec);
 
   close(fd);
 
