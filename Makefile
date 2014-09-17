@@ -1,4 +1,4 @@
-CFLAGS = -Wall -Wextra -Werror -pedantic -std=c99 -O2
+CFLAGS = -Wall -Wextra -Werror -Wno-gnu-zero-variadic-macro-arguments -pedantic -std=c99 -O2
 LDLIBS = -lgmp
 
 A_TARGET = build/librebeltls.a
@@ -25,15 +25,6 @@ $(TESTS): $(A_TARGET)
 test: CFLAGS += -Isrc
 test: $(TESTS)
 	sh ./test/runtests.sh
-
-# release: PREFIX = $(HOME)/.local
-# release: CFLAGS += -O3
-# release: $(TARGET)
-
-# install: PREFIX = $(HOME)/.local
-# install: release
-# 	install -D $(TARGET) $(PREFIX)/$(TARGET)
-# 	install -m 644 -D $(STDLIB) $(PREFIX)/$(STDLIB)
 
 $(A_TARGET): $(LIB_OBJS)
 	@mkdir -p build

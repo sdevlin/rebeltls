@@ -3,7 +3,7 @@
 #include <string.h>
 
 #include "bdlang.h"
-#include "debug.h"
+#include "log.h"
 #include "types.h"
 
 static int accept(const char **srcp, int c)
@@ -18,7 +18,7 @@ static int accept(const char **srcp, int c)
 
 static void expect(const char **srcp, int c)
 {
-  debug_assert(**srcp == c, "bdlang: expected '%c', got '%c'", c, **srcp);
+  log_assert(**srcp == c, "expected '%c', got '%c'", c, **srcp);
   *srcp += 1;
 }
 

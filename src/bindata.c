@@ -2,7 +2,7 @@
 #include <stdlib.h>
 
 #include "bdlang.h"
-#include "debug.h"
+#include "log.h"
 #include "types.h"
 #include "vector.h"
 
@@ -58,11 +58,11 @@ static byte *be_pack_uint16(byte *buf, uint16 n)
   return buf + sizeof n;
 }
 
-static byte *nat_pack_uint24(__attribute__((unused)) byte *buf,
-                             __attribute__((unused)) uint32 n)
+__attribute__ ((noreturn))
+static byte *nat_pack_uint24 (__attribute__ ((unused)) byte *buf,
+                              __attribute__ ((unused)) uint32 n)
 {
-  debug_error("bindata: native pack uint24");
-  return NULL;
+  log_abort("native pack uint24");
 }
 
 static byte *le_pack_uint24(byte *buf, uint32 n)
@@ -297,7 +297,7 @@ static byte *pack_array(byte *buf, int inttype, uint64 len,
 #define PACK_CASE(c, ptype, atype)              \
   case c:                                       \
   {                                             \
-    ptype *p = vec->data;                       \
+    ptype *p = (ptype *)vec->data;              \
     len = (sizeof *p) / vec->len;               \
     for (i = 0; i < len; i += 1) {              \
       buf = fns->pack_##ptype(buf, *p);         \
@@ -312,9 +312,9 @@ static byte *pack_vector(byte *buf, int inttype, uint32 min, uint32 max,
   uint len;
   struct vector *vec;
   vec = va_arg(argp, struct vector *);
-  debug_assert(vec->len >= min && vec->len <= max,
-               "bindata: vector length %u, expected <%u..%u>",
-               vec->len, min, max);
+  log_assert(vec->len >= min && vec->len <= max,
+             "vector length %u, expected <%u..%u>",
+         vec->len, min, max);
   PACK_SWITCH;
   return buf;
 }
