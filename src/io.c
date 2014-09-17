@@ -1,31 +1,41 @@
-#include <unistd.h>
+#include "io.h"
 
-#include "types.h"
-
-void io_read(int fd, byte *buf, uint buflen)
+void io_fileinit(io *io, int fd)
 {
-  uint n;
-
-  while (buflen > 0) {
-    n = read(fd, buf, buflen);
-    buf += n;
-    buflen -= n;
-  }
+  io->defn = &fileio_defn;
+  io->src.fd = fd;
 }
 
-void io_write(int fd, const byte *buf, uint buflen)
+void io_netinit(io *io, int fd)
 {
-  uint n;
-
-  while (buflen > 0) {
-    n = write(fd, buf, buflen);
-    buf += n;
-    buflen -= n;
-  }
+  io->defn = &netio_defn;
+  io->src.fd = fd;
 }
 
-/* probably rethink, won't work with socket */
-void io_seek(int fd, uint len)
+void io_bufinit(io *io, byte *buf, uint buflen)
 {
-  lseek(fd, len, SEEK_CUR);
+  io->defn = &netio_defn;
+  io->src.buf.buf = buf;
+  io->src.buf.len = buflen;
+  io->src.buf.pos = 0;
+}
+
+int io_tryread(io *io, byte *buf, uint buflen)
+{
+  return io->defn->tryread(&io->src, buf, buflen);
+}
+
+int io_trywrite(io *io, const byte *buf, uint buflen)
+{
+  return io->defn->trywrite(&io->src, buf, buflen);
+}
+
+int io_read(io *io, byte *buf, uint buflen)
+{
+  return io->defn->read(&io->src, buf, buflen);
+}
+
+int io_write(io *io, const byte *buf, uint buflen)
+{
+  return io->defn->write(&io->src, buf, buflen);
 }

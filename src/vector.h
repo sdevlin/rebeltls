@@ -9,4 +9,7 @@ struct vector {
   uint32 len;
 };
 
+extern void vector_init(struct vector *vec, void *data, uint32 len);
+extern struct vector vector_new(void *data, uint32 len);
+
 #endif
