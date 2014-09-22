@@ -1,5 +1,5 @@
-#ifndef TLS_SHA384_H
-#define TLS_SHA384_H
+#ifndef REBELTLS_SHA384_H
+#define REBELTLS_SHA384_H
 
 #include "sha512.h"
 #include "types.h"

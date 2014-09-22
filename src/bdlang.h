@@ -1,5 +1,5 @@
-#ifndef TLS_BDLANG_H
-#define TLS_BDLANG_H
+#ifndef REBELTLS_BDLANG_H
+#define REBELTLS_BDLANG_H
 
 #include "types.h"
 

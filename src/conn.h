@@ -1,5 +1,5 @@
-#ifndef TLS_CONN_H
-#define TLS_CONN_H
+#ifndef REBELTLS_CONN_H
+#define REBELTLS_CONN_H
 
 struct conn {
 

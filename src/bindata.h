@@ -1,5 +1,5 @@
-#ifndef TLS_BINDATA_H
-#define TLS_BINDATA_H
+#ifndef REBELTLS_BINDATA_H
+#define REBELTLS_BINDATA_H
 
 #include <stdarg.h>
 

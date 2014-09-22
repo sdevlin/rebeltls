@@ -1,5 +1,5 @@
-#ifndef TLS_RECORD_H
-#define TLS_RECORD_H
+#ifndef REBELTLS_RECORD_H
+#define REBELTLS_RECORD_H
 
 #include "io.h"
 #include "types.h"

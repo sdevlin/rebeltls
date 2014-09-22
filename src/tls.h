@@ -1,5 +1,5 @@
-#ifndef TLS_TLS_H
-#define TLS_TLS_H
+#ifndef REBELTLS_TLS_H
+#define REBELTLS_TLS_H
 
 enum {
   CE_SERVER,

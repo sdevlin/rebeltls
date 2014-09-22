@@ -1,5 +1,5 @@
-#ifndef TLS_LOG_H
-#define TLS_LOG_H
+#ifndef REBELTLS_LOG_H
+#define REBELTLS_LOG_H
 
 #include <stdio.h>
 #include <stdlib.h>

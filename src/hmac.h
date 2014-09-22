@@ -1,5 +1,5 @@
-#ifndef TLS_HMAC_H
-#define TLS_HMAC_H
+#ifndef REBELTLS_HMAC_H
+#define REBELTLS_HMAC_H
 
 #include "hash.h"
 #include "types.h"

@@ -1,5 +1,5 @@
-#ifndef TLS_TYPES_H
-#define TLS_TYPES_H
+#ifndef REBELTLS_TYPES_H
+#define REBELTLS_TYPES_H
 
 #include <stddef.h>
 #include <stdint.h>
@@ -15,5 +15,15 @@ typedef int32_t int32;
 typedef uint32_t uint32;
 typedef int64_t int64;
 typedef uint64_t uint64;
+typedef struct {
+  uint64 hi;
+  uint64 lo;
+} uint128;
+
+extern uint24 uint24_clamp(uint24 x);
+
+extern void uint128_zero(uint128 *x);
+extern void uint128_xor(uint128 *x, const uint128 *y, const uint128 *z);
+extern uint uint128_bit(uint128 *x, uint k);
 
 #endif

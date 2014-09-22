@@ -1,5 +1,5 @@
-#ifndef TLS_RC4_H
-#define TLS_RC4_H
+#ifndef REBELTLS_RC4_H
+#define REBELTLS_RC4_H
 
 #include "types.h"
 

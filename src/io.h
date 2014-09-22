@@ -1,5 +1,5 @@
-#ifndef TLS_IO_H
-#define TLS_IO_H
+#ifndef REBELTLS_IO_H
+#define REBELTLS_IO_H
 
 #include "types.h"
 

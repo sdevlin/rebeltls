@@ -1,5 +1,5 @@
-#ifndef TLS_PRF_H
-#define TLS_PRF_H
+#ifndef REBELTLS_PRF_H
+#define REBELTLS_PRF_H
 
 #include "hash.h"
 #include "types.h"

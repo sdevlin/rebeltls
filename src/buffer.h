@@ -1,5 +1,5 @@
-#ifndef TLS_BUFFER_H
-#define TLS_BUFFER_H
+#ifndef REBELTLS_BUFFER_H
+#define REBELTLS_BUFFER_H
 
 #include "types.h"
 

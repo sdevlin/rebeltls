@@ -1,5 +1,5 @@
-#ifndef TLS_BYTES_H
-#define TLS_BYTES_H
+#ifndef REBELTLS_BYTES_H
+#define REBELTLS_BYTES_H
 
 #include "types.h"
 

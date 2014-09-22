@@ -1,5 +1,5 @@
-#ifndef TLS_RANDOM_H
-#define TLS_RANDOM_H
+#ifndef REBELTLS_RANDOM_H
+#define REBELTLS_RANDOM_H
 
 #include "types.h"
 

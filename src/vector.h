@@ -1,5 +1,5 @@
-#ifndef TLS_VECTOR_H
-#define TLS_VECTOR_H
+#ifndef REBELTLS_VECTOR_H
+#define REBELTLS_VECTOR_H
 
 #include "types.h"
 

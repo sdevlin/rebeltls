@@ -1,5 +1,5 @@
-#ifndef TLS_RSA_H
-#define TLS_RSA_H
+#ifndef REBELTLS_RSA_H
+#define REBELTLS_RSA_H
 
 #include <gmp.h>
 
