@@ -48,6 +48,11 @@ $(BIN_TARGET): $(MAIN_OBJ) $(A_TARGET)
 	@sed -e 's/.*://' -e 's/\\$$//' <$*.d.tmp | fmt -1 | sed -e 's/^ *//' -e 's/$$/:/' >>$*.d
 	@$(RM) $*.d.tmp
 
+TAGS:
+	ctags -eR .
+
+tags: TAGS
+
 clean:
 	$(RM) $(TARGETS) || true
 	$(RM) $(TESTS) || true
@@ -56,4 +61,4 @@ clean:
 	$(RM) *.log || true
 	find . -name '*.dSYM' | xargs rm -rf
 
-.PHONY: dev test release install clean
+.PHONY: dev test release install tags clean
