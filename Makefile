@@ -48,10 +48,8 @@ $(BIN_TARGET): $(MAIN_OBJ) $(A_TARGET)
 	@sed -e 's/.*://' -e 's/\\$$//' <$*.d.tmp | fmt -1 | sed -e 's/^ *//' -e 's/$$/:/' >>$*.d
 	@$(RM) $*.d.tmp
 
-TAGS:
+tags:
 	ctags -eR .
-
-tags: TAGS
 
 clean:
 	$(RM) $(TARGETS) || true

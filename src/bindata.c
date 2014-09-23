@@ -430,6 +430,29 @@ static uint be_unpack_uint16(const byte *buf, uint16 *p)
   return sizeof *p;
 }
 
+__attribute__ ((noreturn))
+static uint nat_unpack_uint24(__attribute__ ((unused)) const byte *buf,
+                              __attribute__ ((unused)) uint24 *p)
+{
+  log_abort("not implemented");
+}
+
+static uint le_unpack_uint24(const byte *buf, uint24 *p)
+{
+  *p = ((buf[0]) |
+        (buf[1] << 8) |
+        (buf[2] << 16));
+  return 3;
+}
+
+static uint be_unpack_uint24(const byte *buf, uint24 *p)
+{
+  *p = ((buf[2]) |
+        (buf[1] << 8) |
+        (buf[0] << 16));
+  return 3;
+}
+
 static uint nat_unpack_int32(const byte *buf, int32 *p)
 {
   *p = *(int32 *)buf;
@@ -547,6 +570,7 @@ struct unpack_fns {
   uint (*unpack_uint8)(const byte *, uint8 *);
   uint (*unpack_int16)(const byte *, int16 *);
   uint (*unpack_uint16)(const byte *, uint16 *);
+  uint (*unpack_uint24)(const byte *, uint24 *);
   uint (*unpack_int32)(const byte *, int32 *);
   uint (*unpack_uint32)(const byte *, uint32 *);
   uint (*unpack_int64)(const byte *, int64 *);
@@ -558,6 +582,7 @@ static struct unpack_fns nat_unpack_fns = {
   .unpack_uint8 = unpack_uint8,
   .unpack_int16 = nat_unpack_int16,
   .unpack_uint16 = nat_unpack_uint16,
+  .unpack_uint24 = nat_unpack_uint24,
   .unpack_int32 = nat_unpack_int32,
   .unpack_uint32 = nat_unpack_uint32,
   .unpack_int64 = nat_unpack_int64,
@@ -569,6 +594,7 @@ static struct unpack_fns le_unpack_fns = {
   .unpack_uint8 = unpack_uint8,
   .unpack_int16 = le_unpack_int16,
   .unpack_uint16 = le_unpack_uint16,
+  .unpack_uint24 = le_unpack_uint24,
   .unpack_int32 = le_unpack_int32,
   .unpack_uint32 = le_unpack_uint32,
   .unpack_int64 = le_unpack_int64,
@@ -580,76 +606,139 @@ static struct unpack_fns be_unpack_fns = {
   .unpack_uint8 = unpack_uint8,
   .unpack_int16 = be_unpack_int16,
   .unpack_uint16 = be_unpack_uint16,
+  .unpack_uint24 = be_unpack_uint24,
   .unpack_int32 = be_unpack_int32,
   .unpack_uint32 = be_unpack_uint32,
   .unpack_int64 = be_unpack_int64,
   .unpack_uint64 = be_unpack_uint64
 };
 
+#define UNPACK_SWITCH                             \
+  do {                                            \
+    switch (inttype) {                            \
+      UNPACK_CASE('b', int8);                     \
+      UNPACK_CASE('B', uint8);                    \
+      UNPACK_CASE('h', int16);                    \
+      UNPACK_CASE('H', uint16);                   \
+      UNPACK_CASE('T', uint24);                   \
+      UNPACK_CASE('l', int32);                    \
+      UNPACK_CASE('L', uint32);                   \
+      UNPACK_CASE('q', int64);                    \
+      UNPACK_CASE('Q', uint64);                   \
+    default:                                      \
+      exit(1);                                    \
+    }                                             \
+  } while (0)
+
+#define UNPACK_CASE(c, type)                                \
+  case c:                                                   \
+  for (i = 0, n = 0; i < count; i += 1) {                   \
+    n += fns->unpack_##type(buf + n, va_arg(argp, type *)); \
+  }                                                         \
+  break;
+
+static uint unpack_register(const byte *buf, int inttype, uint64 count,
+                            struct unpack_fns *fns, va_list argp)
+{
+  uint i, n;
+  UNPACK_SWITCH;
+  return n;
+}
+
+#undef UNPACK_CASE
+
+#define UNPACK_CASE(c, type)                    \
+  case c:                                       \
+  {                                             \
+    type *p = va_arg(argp, type *);             \
+    for (i = 0, n = 0; i < len; i += 1) {       \
+      n += fns->unpack_##type(buf + n, p + i);  \
+    }                                           \
+    break;                                      \
+  }
+
+static uint unpack_array(const byte *buf, int inttype, uint64 len,
+                         struct unpack_fns *fns, va_list argp)
+{
+  uint i, n;
+  UNPACK_SWITCH;
+  return n;
+}
+
+#undef UNPACK_CASE
+
+#define UNPACK_CASE(c, type)                    \
+  case c:                                       \
+  {                                             \
+    type *p = (type *)vec->data;                \
+    len = vec->len / (sizeof *p);               \
+    for (i = 0; i < len; i += 1) {              \
+      n += fns->unpack_##type(buf + n, p + i);  \
+    }                                           \
+    break;                                      \
+  }
+
+static uint unpack_vector(const byte *buf, int inttype, uint32 min, uint32 max,
+                          struct unpack_fns *fns, va_list argp)
+{
+  uint i, n;
+  uint len;
+  struct vector *vec;
+  vec = va_arg(argp, struct vector *);
+  log_assert(vec->len >= min && vec->len <= max,
+             "vector length %u, expected <%u..%u>",
+             vec->len, min, max);
+  /* TODO handle variable size vectors */
+  vec->len = 0;
+  n = fns->unpack_uint8(buf, (uint8 *)&vec->len);
+  UNPACK_SWITCH;
+  return n;
+}
+
 uint bindata_vunpack(const byte *buf, const char *fmt, va_list argp)
 {
-  uint n;
-  struct unpack_fns *fns = &nat_unpack_fns;
+  const struct bdprog *prog;
+  struct bdcmd *cmd;
+  struct unpack_fns *fns;
+  uint i, n;
 
-  for (n = 0; ; fmt += 1) {
-    switch (*fmt) {
+  prog = bdlang_compile(fmt);
 
-    case '=':
-      fns = &nat_unpack_fns;
+  switch (prog->endian) {
+  case ENDIAN_NATIVE:
+    fns = &nat_unpack_fns;
+    break;
+  case ENDIAN_LITTLE:
+    fns = &le_unpack_fns;
+    break;
+  case ENDIAN_BIG:
+    fns = &be_unpack_fns;
+    break;
+  default:
+    exit(1);
+  }
+
+  for (i = 0, n = 0; i < prog->ncmds; i += 1) {
+    cmd = prog->cmds + i;
+
+    switch (cmd->cmdtype) {
+    case TYPE_REGISTER:
+      n += unpack_register(buf + n, cmd->inttype, cmd->coef.val, fns, argp);
       break;
-
-    case '<':
-      fns = &le_unpack_fns;
+    case TYPE_ARRAY:
+      n += unpack_array(buf + n, cmd->inttype, cmd->coef.val, fns, argp);
       break;
-
-    case '>':
-    case '!':
-      fns = &be_unpack_fns;
+    case TYPE_VECTOR:
+      n += unpack_vector(buf + n, cmd->inttype,
+                         cmd->coef.rng.min, cmd->coef.rng.max,
+                         fns, argp);
       break;
-
-    case ' ':
-      /* nop */
-      break;
-
-    case 'b':
-      n += fns->unpack_int8(buf + n, va_arg(argp, int8 *));
-      break;
-
-    case 'B':
-      n += fns->unpack_uint8(buf + n, va_arg(argp, uint8 *));
-      break;
-
-    case 'h':
-      n += fns->unpack_int16(buf + n, va_arg(argp, int16 *));
-      break;
-
-    case 'H':
-      n += fns->unpack_uint16(buf + n, va_arg(argp, uint16 *));
-      break;
-
-    case 'l':
-      n += fns->unpack_int32(buf + n, va_arg(argp, int32 *));
-      break;
-
-    case 'L':
-      n += fns->unpack_uint32(buf + n, va_arg(argp, uint32 *));
-      break;
-
-    case 'q':
-      n += fns->unpack_int64(buf + n, va_arg(argp, int64 *));
-      break;
-
-    case 'Q':
-      n += fns->unpack_uint64(buf + n, va_arg(argp, uint64 *));
-      break;
-
-    case '\0':
-      return n;
-
     default:
       exit(1);
     }
   }
+
+  return n;
 }
 
 uint bindata_unpack(const byte *buf, const char *fmt, ...)
