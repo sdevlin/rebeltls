@@ -21,7 +21,7 @@ typedef struct {
 extern const bc_defn aes128_defn;
 
 enum {
-  BC_DEFN_AES
+  BC_DEFN_AES128
 };
 
 extern const bc_defn *bc_defns[];
