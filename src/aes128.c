@@ -414,15 +414,19 @@ void aes128_encrypt(const aes128_ctx *ctx, const byte *p, byte *c)
 }
 
 static const uint32 dec_T0[] = {
+
 };
 
 static const uint32 dec_T1[] = {
+
 };
 
 static const uint32 dec_T2[] = {
+
 };
 
 static const uint32 dec_T3[] = {
+
 };
 
 static uint32 dec_roundstep(uint32 a, uint32 b, uint32 c, uint32 d, uint32 k)
