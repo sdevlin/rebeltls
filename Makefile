@@ -1,4 +1,5 @@
-CFLAGS = -Wall -Wextra -Werror -Wno-gnu-zero-variadic-macro-arguments -pedantic -std=c99 -O2
+CFLAGS = -Wall -Wextra -Werror -Wno-gnu-zero-variadic-macro-arguments -pedantic -std=c99 -I/usr/local/include -O2
+LDFLAGS = -L/usr/local/lib
 LDLIBS = -lgmp
 
 A_TARGET = build/librebeltls.a
@@ -32,11 +33,11 @@ $(A_TARGET): $(LIB_OBJS)
 
 $(SO_TARGET): $(LIB_OBJS)
 	@mkdir -p build
-	$(CC) $(LDLIBS) -shared -o $@ $(LIB_OBJS)
+	$(CC) $(LDFLAGS) $(LDLIBS) -shared -o $@ $(LIB_OBJS)
 
 $(BIN_TARGET): $(MAIN_OBJ) $(A_TARGET)
 	@mkdir -p bin
-	$(CC) $(LDLIBS) -o $@ $(MAIN_OBJ) $(A_TARGET)
+	$(CC) $(LDFLAGS) $(LDLIBS) -o $@ $(MAIN_OBJ) $(A_TARGET)
 
 -include $(DEPS)
 

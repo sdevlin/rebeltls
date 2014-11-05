@@ -1,6 +1,8 @@
 #ifndef REBELTLS_TLS_H
 #define REBELTLS_TLS_H
 
+#include "types.h"
+
 enum {
   CE_SERVER,
   CE_CLIENT
@@ -32,8 +34,8 @@ enum {
   MAC_HMAC_SHA512
 };
 
-struct tls_conn {
-
-};
+typedef struct {
+  uint8 conn_end;
+} tls_ctx;
 
 #endif
