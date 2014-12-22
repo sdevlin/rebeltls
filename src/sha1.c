@@ -58,23 +58,13 @@ static uint32 maj(uint32 x, uint32 y, uint32 z)
 
 typedef uint32 (*sha1func)(uint32, uint32, uint32);
 
+#define TIMES20(x) x, x, x, x, x, x, x, x, x, x, x, x, x, x, x, x, x, x, x, x
+
 static const sha1func f[] = {
-  &ch, &ch, &ch, &ch, &ch,
-  &ch, &ch, &ch, &ch, &ch,
-  &ch, &ch, &ch, &ch, &ch,
-  &ch, &ch, &ch, &ch, &ch,
-  &parity, &parity, &parity, &parity, &parity,
-  &parity, &parity, &parity, &parity, &parity,
-  &parity, &parity, &parity, &parity, &parity,
-  &parity, &parity, &parity, &parity, &parity,
-  &maj, &maj, &maj, &maj, &maj,
-  &maj, &maj, &maj, &maj, &maj,
-  &maj, &maj, &maj, &maj, &maj,
-  &maj, &maj, &maj, &maj, &maj,
-  &parity, &parity, &parity, &parity, &parity,
-  &parity, &parity, &parity, &parity, &parity,
-  &parity, &parity, &parity, &parity, &parity,
-  &parity, &parity, &parity, &parity, &parity
+  TIMES20(&ch),
+  TIMES20(&parity),
+  TIMES20(&maj),
+  TIMES20(&parity)
 };
 
 void sha1_compress(sha1_ctx *ctx)
