@@ -3,36 +3,17 @@
 #include <string.h>
 
 #include "bindata.h"
-#include "md.h"
+#include "md_defn.h"
 #include "sha1.h"
 #include "types.h"
 
-static const uint32 h[] = {
+const uint32 sha1_initstate[] = {
   0x67452301,
   0xefcdab89,
   0x98badcfe,
   0x10325476,
   0xc3d2e1f0
 };
-
-void sha1_init(sha1_ctx *ctx)
-{
-  ctx->mlen = 0;
-  memcpy(ctx->h, h, sizeof ctx->h);
-}
-
-sha1_ctx *sha1_new(void)
-{
-  sha1_ctx *ctx;
-  ctx = malloc(sizeof *ctx);
-  sha1_init(ctx);
-  return ctx;
-}
-
-void sha1_reset(sha1_ctx *ctx)
-{
-  sha1_init(ctx);
-}
 
 static const uint32 K[] = {
   0x5a827999, 0x5a827999, 0x5a827999, 0x5a827999, 0x5a827999,
@@ -136,45 +117,14 @@ void sha1_compress(sha1_ctx *ctx)
   ctx->h[4] += e;
 }
 
-static byte *md_buffer(md_ctx *ctx)
+static void packmlen(sha1_ctx *ctx)
 {
-  return ((sha1_ctx *)ctx)->buf;
+  bindata_pack(ctx->buf + 56, "> Q", ctx->mlen << 3);
 }
 
-static void md_compress(md_ctx *ctx)
+static void packh(sha1_ctx *ctx, byte *h)
 {
-  sha1_compress((sha1_ctx *)ctx);
-}
-
-static void md_packmlen(md_ctx *ctx)
-{
-  bindata_pack(md_buffer(ctx) + 56, "> Q", ctx->mlen << 3);
-}
-
-static const md_defn defn = {
-  .buflen = 64,
-  .buffer = &md_buffer,
-  .compress = &md_compress,
-  .mlenoffset = 56,
-  .packmlen = &md_packmlen
-};
-
-void sha1_update(sha1_ctx *ctx, const byte *m, uint mlen)
-{
-  md_update(&defn, (md_ctx *)ctx, m, mlen);
-}
-
-void sha1_final(sha1_ctx *ctx, byte *h)
-{
-  md_final(&defn, (md_ctx *)ctx);
   bindata_pack(h, "> L[5]", ctx->h);
 }
 
-void sha1_digest(const byte *m, uint mlen, byte *h)
-{
-  sha1_ctx ctx;
-
-  sha1_init(&ctx);
-  sha1_update(&ctx, m, mlen);
-  sha1_final(&ctx, h);
-}
+MD_DEFN(sha1)

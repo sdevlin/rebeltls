@@ -9,6 +9,8 @@ typedef struct {
   byte buf[64];
 } sha1_ctx;
 
+extern const uint32 sha1_initstate[5];
+
 extern void sha1_init(sha1_ctx *ctx);
 extern sha1_ctx *sha1_new(void);
 
