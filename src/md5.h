@@ -9,6 +9,8 @@ typedef struct {
   byte buf[64];
 } md5_ctx;
 
+extern const uint32 md5_initstate[4];
+
 extern void md5_init(md5_ctx *ctx);
 extern md5_ctx *md5_new(void);
 

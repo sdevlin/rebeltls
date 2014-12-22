@@ -3,35 +3,16 @@
 #include <string.h>
 
 #include "bindata.h"
-#include "md.h"
 #include "md5.h"
 #include "types.h"
+#include "md_defn.h"
 
-static const uint32 H[] = {
+const uint32 md5_initstate[] = {
   0x67452301,
   0xefcdab89,
   0x98badcfe,
   0x10325476
 };
-
-void md5_init(md5_ctx *ctx)
-{
-  ctx->mlen = 0;
-  memcpy(ctx->h, H, sizeof ctx->h);
-}
-
-md5_ctx *md5_new(void)
-{
-  md5_ctx *ctx;
-  ctx = malloc(sizeof *ctx);
-  md5_init(ctx);
-  return ctx;
-}
-
-void md5_reset(md5_ctx *ctx)
-{
-  md5_init(ctx);
-}
 
 static const uint32 T[] = {
   0xd76aa478, 0xe8c7b756, 0x242070db, 0xc1bdceee,
@@ -173,45 +154,14 @@ void md5_compress(md5_ctx *ctx)
   ctx->h[3] += d;
 }
 
-static byte *md_buffer(md_ctx *ctx)
+static void packmlen(md5_ctx *ctx)
 {
-  return ((md5_ctx *)ctx)->buf;
+  bindata_pack(ctx->buf + 56, "< Q", ctx->mlen << 3);
 }
 
-static void md_compress(md_ctx *ctx)
+static void packh(md5_ctx *ctx, byte *h)
 {
-  md5_compress((md5_ctx *)ctx);
-}
-
-static void md_packmlen(md_ctx *ctx)
-{
-  bindata_pack(md_buffer(ctx) + 56, "< Q", ctx->mlen << 3);
-}
-
-static const md_defn defn = {
-  .buflen = 64,
-  .buffer = &md_buffer,
-  .compress = &md_compress,
-  .mlenoffset = 56,
-  .packmlen = &md_packmlen
-};
-
-void md5_update(md5_ctx *ctx, const byte *m, uint mlen)
-{
-  md_update(&defn, (md_ctx *)ctx, m, mlen);
-}
-
-void md5_final(md5_ctx *ctx, byte *h)
-{
-  md_final(&defn, (md_ctx *)ctx);
   bindata_pack(h, "< L[4]", ctx->h);
 }
 
-void md5_digest(const byte *m, uint mlen, byte *h)
-{
-  md5_ctx ctx;
-
-  md5_init(&ctx);
-  md5_update(&ctx, m, mlen);
-  md5_final(&ctx, h);
-}
+MD_DEFN(md5)
