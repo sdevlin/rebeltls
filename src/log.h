@@ -4,6 +4,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+/* TODO this could all use a little work i think */
+
 #define log_info(fmt, ...)                                              \
   fprintf(stderr, "INFO %s:%d (%s) " fmt "\n",                          \
           __FILE__, __LINE__, __func__, ##__VA_ARGS__)
