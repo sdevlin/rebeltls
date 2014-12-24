@@ -37,6 +37,9 @@
     .digest = &name##_digest                                \
   };
 
+#include "md5.h"
+DESCRIBE_HASH(md5, 16, 64)
+
 #include "sha1.h"
 DESCRIBE_HASH(sha1, 20, 64)
 
@@ -53,6 +56,7 @@ DESCRIBE_HASH(sha384, 48, 64)
 DESCRIBE_HASH(sha512, 64, 128)
 
 const hash_desc *hash_descs[] = {
+  &md5_desc,
   &sha1_desc,
   &sha224_desc,
   &sha256_desc,
