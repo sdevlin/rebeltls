@@ -2,6 +2,7 @@
 
 #include "hash.h"
 #include "hmac.h"
+#include "log.h"
 #include "prf.h"
 #include "types.h"
 
@@ -22,9 +23,8 @@ extern void prf_expand(const hash_desc *desc,
   byte A[HASH_MAX_HASHLEN];
   byte h[HASH_MAX_HASHLEN];
 
-  if (labellen + seedlen > sizeof A) {
-    /* TODO error */
-  }
+  log_assert(labellen + seedlen <= sizeof A,
+             "labellen + seedlen > sizeof A (%u > %lu)", labellen + seedlen, sizeof A);
 
   memcpy(A, label, labellen);
   memcpy(A + labellen, seed, seedlen);
