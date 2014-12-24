@@ -154,4 +154,4 @@ static void packh(sha512_ctx *ctx, byte *h)
   bindata_pack(h, "> Q[8]", ctx->h);
 }
 
-MD_DEFN(sha512)
+DEFINE_MD(sha512)

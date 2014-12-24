@@ -128,4 +128,4 @@ static void packh(sha256_ctx *ctx, byte *h)
   bindata_pack(h, "> L[8]", ctx->h);
 }
 
-MD_DEFN(sha256)
+DEFINE_MD(sha256)

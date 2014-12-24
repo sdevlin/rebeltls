@@ -159,4 +159,4 @@ static void packh(md5_ctx *ctx, byte *h)
   bindata_pack(h, "< L[4]", ctx->h);
 }
 
-MD_DEFN(md5)
+DEFINE_MD(md5)

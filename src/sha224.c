@@ -27,4 +27,4 @@ static void packh(sha224_ctx *ctx, byte *h)
   bindata_pack(h, "> L[7]", ctx->h);
 }
 
-MD_DEFN(sha224)
+DEFINE_MD(sha224)

@@ -1,7 +1,7 @@
 #ifndef MD_DEFN_H
 #define MD_DEFN_H
 
-#define MD_DEFN(name)                                               \
+#define DEFINE_MD(name)                                             \
   void name##_init(name##_ctx *ctx)                                 \
   {                                                                 \
     ctx->mlen = 0;                                                  \
