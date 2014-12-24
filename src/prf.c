@@ -10,7 +10,7 @@ static uint min(uint x, uint y)
   return x < y ? x : y;
 }
 
-extern void prf_expand(const hash_defn *defn,
+extern void prf_expand(const hash_desc *desc,
                        const byte *secret, uint secretlen,
                        const byte *label, uint labellen,
                        const byte *seed, uint seedlen,
@@ -31,16 +31,16 @@ extern void prf_expand(const hash_defn *defn,
   Alen = labellen + seedlen;
 
   while (outlen > 0) {
-    hmac_digest(defn, secret, secretlen, A, Alen, A);
-    Alen = defn->hashlen;
+    hmac_digest(desc, secret, secretlen, A, Alen, A);
+    Alen = desc->hashlen;
 
-    hmac_init(&ctx, defn, secret, secretlen);
+    hmac_init(&ctx, desc, secret, secretlen);
     hmac_update(&ctx, A, Alen);
     hmac_update(&ctx, label, labellen);
     hmac_update(&ctx, seed, seedlen);
     hmac_final(&ctx, h);
 
-    take = min(outlen, defn->hashlen);
+    take = min(outlen, desc->hashlen);
     memcpy(out, h, take);
     out += take;
     outlen -= take;

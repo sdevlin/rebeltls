@@ -33,7 +33,7 @@ int main(void)
   };
   byte actual[sizeof expected];
 
-  prf_expand(&sha256_defn,
+  prf_expand(&sha256_desc,
              secret, sizeof secret,
              label, sizeof label,
              seed, sizeof seed,

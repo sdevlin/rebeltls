@@ -4,7 +4,7 @@
 #include "hash.h"
 #include "types.h"
 
-extern void prf_expand(const hash_defn *defn,
+extern void prf_expand(const hash_desc *desc,
                        const byte *secret, uint secretlen,
                        const byte *label, uint labellen,
                        const byte *seed, uint seedlen,

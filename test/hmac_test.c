@@ -39,7 +39,7 @@ int main(void)
 {
   byte mac[sizeof client_hello_bin_mac];
 
-  hmac_digest(&sha512_defn,
+  hmac_digest(&sha512_desc,
               key, sizeof key,
               client_hello_bin, sizeof client_hello_bin,
               mac);

@@ -2,15 +2,15 @@
 
 int main(void)
 {
-  if (&sha1_defn != hash_defns[HASH_DEFN_SHA1]) {
+  if (&sha1_desc != hash_descs[HASH_DESC_SHA1]) {
     return 1;
   }
 
-  if (&sha256_defn != hash_defns[HASH_DEFN_SHA256]) {
+  if (&sha256_desc != hash_descs[HASH_DESC_SHA256]) {
     return 1;
   }
 
-  if (&sha512_defn != hash_defns[HASH_DEFN_SHA512]) {
+  if (&sha512_desc != hash_descs[HASH_DESC_SHA512]) {
     return 1;
   }
 

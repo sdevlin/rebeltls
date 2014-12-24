@@ -18,22 +18,22 @@ typedef struct {
   void (*update)(hash_ctx *ctx, const byte *m, uint mlen);
   void (*final)(hash_ctx *ctx, byte *h);
   void (*digest)(const byte *m, uint mlen, byte *h);
-} hash_defn;
+} hash_desc;
 
-extern const hash_defn sha1_defn;
-extern const hash_defn sha224_defn;
-extern const hash_defn sha256_defn;
-extern const hash_defn sha384_defn;
-extern const hash_defn sha512_defn;
+extern const hash_desc sha1_desc;
+extern const hash_desc sha224_desc;
+extern const hash_desc sha256_desc;
+extern const hash_desc sha384_desc;
+extern const hash_desc sha512_desc;
 
 enum {
-  HASH_DEFN_SHA1,
-  HASH_DEFN_SHA224,
-  HASH_DEFN_SHA256,
-  HASH_DEFN_SHA384,
-  HASH_DEFN_SHA512
+  HASH_DESC_SHA1,
+  HASH_DESC_SHA224,
+  HASH_DESC_SHA256,
+  HASH_DESC_SHA384,
+  HASH_DESC_SHA512
 };
 
-extern const hash_defn *hash_defns[];
+extern const hash_desc *hash_descs[];
 
 #endif
