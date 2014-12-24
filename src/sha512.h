@@ -9,6 +9,8 @@ typedef struct {
   byte buf[128];
 } sha512_ctx;
 
+extern const uint64 sha512_initstate[8];
+
 extern void sha512_init(sha512_ctx *ctx);
 extern sha512_ctx *sha512_new(void);
 

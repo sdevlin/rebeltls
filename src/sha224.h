@@ -6,6 +6,8 @@
 
 typedef sha256_ctx sha224_ctx;
 
+extern const uint32 sha224_initstate[8];
+
 extern void sha224_init(sha224_ctx *ctx);
 extern sha224_ctx *sha224_new(void);
 

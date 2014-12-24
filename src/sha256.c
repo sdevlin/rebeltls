@@ -3,33 +3,14 @@
 #include <string.h>
 
 #include "bindata.h"
-#include "md.h"
+#include "md_defn.h"
 #include "sha256.h"
 #include "types.h"
 
-static const uint32 h[] = {
+const uint32 sha256_initstate[] = {
   0x6a09e667, 0xbb67ae85, 0x3c6ef372, 0xa54ff53a,
   0x510e527f, 0x9b05688c, 0x1f83d9ab, 0x5be0cd19
 };
-
-void sha256_init(sha256_ctx *ctx)
-{
-  ctx->mlen = 0;
-  memcpy(ctx->h, h, sizeof ctx->h);
-}
-
-sha256_ctx *sha256_new(void)
-{
-  sha256_ctx *ctx;
-  ctx = malloc(sizeof *ctx);
-  sha256_init(ctx);
-  return ctx;
-}
-
-void sha256_reset(sha256_ctx *ctx)
-{
-  sha256_init(ctx);
-}
 
 static const uint32 K[] = {
   0x428a2f98, 0x71374491, 0xb5c0fbcf, 0xe9b5dba5,
@@ -137,45 +118,14 @@ void sha256_compress(sha256_ctx *ctx)
   ctx->h[7] += h;
 }
 
-static byte *md_buffer(md_ctx *ctx)
+static void packmlen(sha256_ctx *ctx)
 {
-  return ((sha256_ctx *)ctx)->buf;
+  bindata_pack(ctx->buf + 56, "> Q", ctx->mlen << 3);
 }
 
-static void md_compress(md_ctx *ctx)
+static void packh(sha256_ctx *ctx, byte *h)
 {
-  sha256_compress((sha256_ctx *)ctx);
-}
-
-static void md_packmlen(md_ctx *ctx)
-{
-  bindata_pack(md_buffer(ctx) + 56, "> Q", ctx->mlen << 3);
-}
-
-static const md_defn defn = {
-  .buflen = 64,
-  .buffer = &md_buffer,
-  .compress = &md_compress,
-  .mlenoffset = 56,
-  .packmlen = &md_packmlen
-};
-
-void sha256_update(sha256_ctx *ctx, const byte *m, uint mlen)
-{
-  md_update(&defn, (md_ctx *)ctx, m, mlen);
-}
-
-void sha256_final(sha256_ctx *ctx, byte *h)
-{
-  md_final(&defn, (md_ctx *)ctx);
   bindata_pack(h, "> L[8]", ctx->h);
 }
 
-void sha256_digest(const byte *m, uint mlen, byte *h)
-{
-  sha256_ctx ctx;
-
-  sha256_init(&ctx);
-  sha256_update(&ctx, m, mlen);
-  sha256_final(&ctx, h);
-}
+MD_DEFN(sha256)
