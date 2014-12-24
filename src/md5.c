@@ -68,12 +68,7 @@ void md5_compress(md5_ctx *ctx)
   uint32 x[16];
   uint32 a, b, c, d;
 
-  /* TODO change when unpack is done */
-  bindata_unpack(ctx->buf, "< LLLL LLLL LLLL LLLL",
-                 &x[0x0], &x[0x1], &x[0x2], &x[0x3],
-                 &x[0x4], &x[0x5], &x[0x6], &x[0x7],
-                 &x[0x8], &x[0x9], &x[0xa], &x[0xb],
-                 &x[0xc], &x[0xd], &x[0xe], &x[0xf]);
+  bindata_unpack(ctx->buf, "< L[16]", x);
 
   a = ctx->h[0];
   b = ctx->h[1];
