@@ -1,7 +1,7 @@
 #include <string.h>
 
 #include "bytes.h"
-#include "types.h"
+#include "inttypes.h"
 
 void bytes_xor(byte *x, const byte *y, const byte *z, uint len)
 {

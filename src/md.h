@@ -1,7 +1,7 @@
 #ifndef REBELTLS_MD_H
 #define REBELTLS_MD_H
 
-#include "types.h"
+#include "inttypes.h"
 
 typedef struct {
   uint mlen;

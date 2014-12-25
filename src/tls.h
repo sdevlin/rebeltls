@@ -1,7 +1,7 @@
 #ifndef REBELTLS_TLS_H
 #define REBELTLS_TLS_H
 
-#include "types.h"
+#include "inttypes.h"
 
 enum {
   CE_SERVER,

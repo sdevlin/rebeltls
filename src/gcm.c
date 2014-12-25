@@ -3,7 +3,7 @@
 
 #include "bc.h"
 #include "log.h"
-#include "types.h"
+#include "inttypes.h"
 #include "gcm.h"
 
 /* static const uint128 f = { */

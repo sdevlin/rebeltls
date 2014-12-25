@@ -2,7 +2,7 @@
 #define REBELTLS_PRF_H
 
 #include "hash.h"
-#include "types.h"
+#include "inttypes.h"
 
 extern void prf_expand(const hash_desc *desc,
                        const byte *secret, uint secretlen,

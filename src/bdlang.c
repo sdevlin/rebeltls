@@ -4,7 +4,7 @@
 
 #include "bdlang.h"
 #include "log.h"
-#include "types.h"
+#include "inttypes.h"
 
 static int accept(const char **srcp, int c)
 {

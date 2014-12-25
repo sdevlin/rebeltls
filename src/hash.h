@@ -2,7 +2,7 @@
 #define REBELTLS_HASH_H
 
 #include "sha512.h"
-#include "types.h"
+#include "inttypes.h"
 
 typedef sha512_ctx hash_ctx;
 

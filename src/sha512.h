@@ -1,7 +1,7 @@
 #ifndef REBELTLS_SHA512_H
 #define REBELTLS_SHA512_H
 
-#include "types.h"
+#include "inttypes.h"
 
 typedef struct {
   uint mlen;

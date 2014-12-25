@@ -1,7 +1,7 @@
 #ifndef REBELTLS_IO_H
 #define REBELTLS_IO_H
 
-#include "types.h"
+#include "inttypes.h"
 
 typedef union {
   int fd;

@@ -2,7 +2,7 @@
 
 #include "bytes.h"
 #include "rc4.h"
-#include "types.h"
+#include "inttypes.h"
 
 #define SWAP(x, y)                              \
   tmp = x;                                      \

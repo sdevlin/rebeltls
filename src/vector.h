@@ -1,7 +1,7 @@
 #ifndef REBELTLS_VECTOR_H
 #define REBELTLS_VECTOR_H
 
-#include "types.h"
+#include "inttypes.h"
 
 struct vector {
   byte *data;

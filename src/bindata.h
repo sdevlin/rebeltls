@@ -3,7 +3,7 @@
 
 #include <stdarg.h>
 
-#include "types.h"
+#include "inttypes.h"
 
 extern uint bindata_vpack(byte *buf, const char *fmt, va_list argp);
 extern uint bindata_pack(byte *buf, const char *fmt, ...);

@@ -2,7 +2,7 @@
 
 #include "bytes.h"
 #include "md.h"
-#include "types.h"
+#include "inttypes.h"
 
 static uint min(uint a, uint b)
 {

@@ -2,7 +2,7 @@
 #define REBELTLS_HMAC_H
 
 #include "hash.h"
-#include "types.h"
+#include "inttypes.h"
 
 typedef struct {
   const hash_desc *hash_desc;

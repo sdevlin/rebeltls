@@ -2,7 +2,7 @@
 #define REBELTLS_SHA224_H
 
 #include "sha256.h"
-#include "types.h"
+#include "inttypes.h"
 
 typedef sha256_ctx sha224_ctx;
 

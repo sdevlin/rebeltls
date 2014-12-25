@@ -4,7 +4,7 @@
 #include "hmac.h"
 #include "log.h"
 #include "prf.h"
-#include "types.h"
+#include "inttypes.h"
 
 static uint min(uint x, uint y)
 {

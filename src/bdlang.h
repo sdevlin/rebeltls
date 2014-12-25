@@ -1,7 +1,7 @@
 #ifndef REBELTLS_BDLANG_H
 #define REBELTLS_BDLANG_H
 
-#include "types.h"
+#include "inttypes.h"
 
 enum {
   ENDIAN_BIG,

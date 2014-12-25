@@ -1,4 +1,4 @@
-#include "types.h"
+#include "inttypes.h"
 
 uint24 uint24_clamp(uint24 x)
 {

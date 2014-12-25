@@ -1,7 +1,7 @@
 #ifndef REBELTLS_AES128_H
 #define REBELTLS_AES128_H
 
-#include "types.h"
+#include "inttypes.h"
 
 typedef struct {
   uint32 w[44];

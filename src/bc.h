@@ -2,7 +2,7 @@
 #define REBELTLS_BC_H
 
 #include "aes128.h"
-#include "types.h"
+#include "inttypes.h"
 
 typedef aes128_ctx bc_ctx;
 

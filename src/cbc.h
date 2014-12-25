@@ -1,7 +1,7 @@
 #ifndef REBELTLS_CBC_H
 #define REBELTLS_CBC_H
 
-#include "types.h"
+#include "inttypes.h"
 #include "bc.h"
 
 enum {

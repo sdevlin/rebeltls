@@ -5,7 +5,7 @@
 #include "bindata.h"
 #include "md_defn.h"
 #include "sha256.h"
-#include "types.h"
+#include "inttypes.h"
 
 const uint32 sha256_initstate[] = {
   0x6a09e667, 0xbb67ae85, 0x3c6ef372, 0xa54ff53a,

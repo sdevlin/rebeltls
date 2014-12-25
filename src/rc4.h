@@ -1,7 +1,7 @@
 #ifndef REBELTLS_RC4_H
 #define REBELTLS_RC4_H
 
-#include "types.h"
+#include "inttypes.h"
 
 typedef struct {
   uint8 i;

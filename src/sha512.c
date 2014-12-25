@@ -5,7 +5,7 @@
 #include "bindata.h"
 #include "md_defn.h"
 #include "sha512.h"
-#include "types.h"
+#include "inttypes.h"
 
 const uint64 sha512_initstate[] = {
   0x6a09e667f3bcc908, 0xbb67ae8584caa73b,

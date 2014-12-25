@@ -2,7 +2,7 @@
 #define REBELTLS_SHA384_H
 
 #include "sha512.h"
-#include "types.h"
+#include "inttypes.h"
 
 typedef sha512_ctx sha384_ctx;
 

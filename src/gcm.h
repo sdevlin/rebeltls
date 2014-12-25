@@ -2,7 +2,7 @@
 #define REBELTLS_GCM_H
 
 #include "bc.h"
-#include "types.h"
+#include "inttypes.h"
 
 enum {
   GCM_ENCRYPT,

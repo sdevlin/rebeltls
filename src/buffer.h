@@ -1,7 +1,7 @@
 #ifndef REBELTLS_BUFFER_H
 #define REBELTLS_BUFFER_H
 
-#include "types.h"
+#include "inttypes.h"
 
 typedef struct {
   byte *buf;

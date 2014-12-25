@@ -1,5 +1,5 @@
-#ifndef REBELTLS_TYPES_H
-#define REBELTLS_TYPES_H
+#ifndef REBELTLS_INTTYPES_H
+#define REBELTLS_INTTYPES_H
 
 #include <stddef.h>
 #include <stdint.h>

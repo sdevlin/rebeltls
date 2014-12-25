@@ -1,7 +1,7 @@
 #include <string.h>
 
 #include "bindata.h"
-#include "types.h"
+#include "inttypes.h"
 #include "log.h"
 #include "bytes.h"
 #include "aes128.h"

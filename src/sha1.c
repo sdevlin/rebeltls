@@ -5,7 +5,7 @@
 #include "bindata.h"
 #include "md_defn.h"
 #include "sha1.h"
-#include "types.h"
+#include "inttypes.h"
 
 const uint32 sha1_initstate[] = {
   0x67452301,

@@ -6,7 +6,7 @@
 #include "md.h"
 #include "sha384.h"
 #include "sha512.h"
-#include "types.h"
+#include "inttypes.h"
 
 static const uint64 h[] = {
   0xcbbb9d5dc1059ed8, 0x629a292a367cd507,

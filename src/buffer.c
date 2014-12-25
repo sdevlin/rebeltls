@@ -3,7 +3,7 @@
 
 #include "buffer.h"
 #include "log.h"
-#include "types.h"
+#include "inttypes.h"
 
 void buffer_init(buffer *b, byte *buf, uint len)
 {

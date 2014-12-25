@@ -3,7 +3,7 @@
 #include "bindata.h"
 #include "io.h"
 #include "record.h"
-#include "types.h"
+#include "inttypes.h"
 
 void record_init(struct record *rec, uint8 content_type,
                  byte *fragment, uint16 length)

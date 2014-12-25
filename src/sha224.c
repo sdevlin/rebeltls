@@ -5,7 +5,7 @@
 #include "md_defn.h"
 #include "sha224.h"
 #include "sha256.h"
-#include "types.h"
+#include "inttypes.h"
 
 const uint32 sha224_initstate[] = {
   0xc1059ed8, 0x367cd507, 0x3070dd17, 0xf70e5939,

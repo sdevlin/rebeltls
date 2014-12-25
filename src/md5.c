@@ -4,7 +4,7 @@
 
 #include "bindata.h"
 #include "md5.h"
-#include "types.h"
+#include "inttypes.h"
 #include "md_defn.h"
 
 const uint32 md5_initstate[] = {

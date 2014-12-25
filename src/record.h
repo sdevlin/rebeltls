@@ -2,7 +2,7 @@
 #define REBELTLS_RECORD_H
 
 #include "io.h"
-#include "types.h"
+#include "inttypes.h"
 
 #define RECORD_MAX_LEN 18432
 

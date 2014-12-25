@@ -3,7 +3,7 @@
 
 #include "bdlang.h"
 #include "log.h"
-#include "types.h"
+#include "inttypes.h"
 #include "vector.h"
 
 static uint pack_int8(byte *buf, int8 n)

@@ -11,7 +11,7 @@
 #include "bindata.h"
 #include "io.h"
 #include "record.h"
-#include "types.h"
+#include "inttypes.h"
 #include "random.h"
 #include "vector.h"
 
