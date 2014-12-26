@@ -1,11 +1,8 @@
-#include <stdlib.h>
-#include <string.h>
-
 #include "bindata.h"
+#include "inttypes.h"
 #include "md_defn.h"
 #include "sha224.h"
 #include "sha256.h"
-#include "inttypes.h"
 
 const u32 sha224_initstate[] = {
   0xc1059ed8, 0x367cd507, 0x3070dd17, 0xf70e5939,

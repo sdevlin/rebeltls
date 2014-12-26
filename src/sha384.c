@@ -1,12 +1,8 @@
-#include <assert.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "bindata.h"
+#include "inttypes.h"
 #include "md_defn.h"
 #include "sha384.h"
 #include "sha512.h"
-#include "inttypes.h"
 
 const u64 sha384_initstate[] = {
   0xcbbb9d5dc1059ed8, 0x629a292a367cd507,

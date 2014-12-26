@@ -1,11 +1,9 @@
 #include <assert.h>
-#include <stdlib.h>
-#include <string.h>
 
 #include "bindata.h"
+#include "inttypes.h"
 #include "md_defn.h"
 #include "sha512.h"
-#include "inttypes.h"
 
 const u64 sha512_initstate[] = {
   0x6a09e667f3bcc908, 0xbb67ae8584caa73b,

@@ -1,11 +1,9 @@
 #include <assert.h>
-#include <stdlib.h>
-#include <string.h>
 
 #include "bindata.h"
+#include "inttypes.h"
 #include "md_defn.h"
 #include "sha1.h"
-#include "inttypes.h"
 
 const u32 sha1_initstate[] = {
   0x67452301,

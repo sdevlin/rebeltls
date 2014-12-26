@@ -1,11 +1,9 @@
 #include <assert.h>
-#include <stdlib.h>
-#include <string.h>
 
 #include "bindata.h"
+#include "inttypes.h"
 #include "md_defn.h"
 #include "sha256.h"
-#include "inttypes.h"
 
 const u32 sha256_initstate[] = {
   0x6a09e667, 0xbb67ae85, 0x3c6ef372, 0xa54ff53a,

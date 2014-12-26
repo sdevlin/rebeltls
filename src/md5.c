@@ -1,10 +1,8 @@
 #include <assert.h>
-#include <stdlib.h>
-#include <string.h>
 
 #include "bindata.h"
-#include "md5.h"
 #include "inttypes.h"
+#include "md5.h"
 #include "md_defn.h"
 
 const u32 md5_initstate[] = {

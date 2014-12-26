@@ -1,6 +1,11 @@
 #ifndef MD_DEFN_H
 #define MD_DEFN_H
 
+#include <stdlib.h>
+#include <string.h>
+
+#include "inttypes.h"
+
 #define DEFINE_MD(name)                                             \
   void name##_init(name##_ctx *ctx)                                 \
   {                                                                 \
