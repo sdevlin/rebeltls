@@ -266,7 +266,7 @@ static const uint8 enc_T[] = {
   0x3a, 0x16, 0x16, 0x2c, 0x3a, 0x16, 0x16, 0x00
 };
 
-#define enc_T0(b) (((const uint32 *)(enc_T + 0))[(b) << 1])
+#define enc_T0(b) (((const uint32 *)(enc_T    ))[(b) << 1])
 
 #define enc_T1(b) (((const uint32 *)(enc_T + 1))[(b) << 1])
 
