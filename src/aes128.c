@@ -266,15 +266,15 @@ static const uint8 enc_T[] = {
   0x3a, 0x16, 0x16, 0x2c, 0x3a, 0x16, 0x16, 0x00
 };
 
-static const uint32 *enc_T0 = (const uint32 *)(enc_T + 0);
+#define enc_T0(b) (((const uint32 *)(enc_T + 0))[(b) << 1])
 
-static const uint32 *enc_T1 = (const uint32 *)(enc_T + 1);
+#define enc_T1(b) (((const uint32 *)(enc_T + 1))[(b) << 1])
 
-static const uint32 *enc_T2 = (const uint32 *)(enc_T + 2);
+#define enc_T2(b) (((const uint32 *)(enc_T + 2))[(b) << 1])
 
-static const uint32 *enc_T3 = (const uint32 *)(enc_T + 3);
+#define enc_T3(b) (((const uint32 *)(enc_T + 3))[(b) << 1])
 
-static const byte *S = (const byte *)(enc_T + 1);
+#define S(b) (((const byte *)(enc_T + 1))[(b) << 3])
 
 static uint32 Rcon[] = {
   0x00000000,                   /* unused */
@@ -293,10 +293,10 @@ void aes128_init(aes128_ctx *ctx, const byte *key)
   for (i = 4; i < 44; i += 1) {
     uint32 tmp = w[i-1];
     if ((i % 4) == 0) {
-      tmp = (((S[((tmp >> 16) & 0xff) << 3] << 24) |
-              (S[((tmp >>  8) & 0xff) << 3] << 16) |
-              (S[((tmp      ) & 0xff) << 3] <<  8) |
-              (S[((tmp >> 24) & 0xff) << 3]      )) ^
+      tmp = (((S((tmp >> 16) & 0xff) << 24) |
+              (S((tmp >>  8) & 0xff) << 16) |
+              (S((tmp      ) & 0xff) <<  8) |
+              (S((tmp >> 24) & 0xff)      )) ^
              Rcon[i/4]);
     }
     w[i] = w[i-4] ^ tmp;
@@ -305,10 +305,10 @@ void aes128_init(aes128_ctx *ctx, const byte *key)
 
 static uint32 enc_roundstep(uint32 a, uint32 b, uint32 c, uint32 d, uint32 k)
 {
-  return (enc_T0[(a >> 23) & 0x1fe] ^
-          enc_T1[(b >> 15) & 0x1fe] ^
-          enc_T2[(c >>  7) & 0x1fe] ^
-          enc_T3[(d <<  1) & 0x1fe] ^
+  return (enc_T0((a >> 24) & 0xff) ^
+          enc_T1((b >> 16) & 0xff) ^
+          enc_T2((c >>  8) & 0xff) ^
+          enc_T3((d      ) & 0xff) ^
           k);
 }
 
@@ -322,10 +322,10 @@ static uint32 enc_roundstep(uint32 a, uint32 b, uint32 c, uint32 d, uint32 k)
 static uint32 enc_finalroundstep(uint32 a, uint32 b, uint32 c, uint32 d,
                                  uint32 k)
 {
-  return ((enc_T2[(a >> 23) & 0x1fe] & 0xff000000) ^
-          (enc_T3[(b >> 15) & 0x1fe] & 0x00ff0000) ^
-          (enc_T0[(c >>  7) & 0x1fe] & 0x0000ff00) ^
-          (enc_T1[(d <<  1) & 0x1fe] & 0x000000ff) ^
+  return ((enc_T2((a >> 24) & 0xff) & 0xff000000) ^
+          (enc_T3((b >> 16) & 0xff) & 0x00ff0000) ^
+          (enc_T0((c >>  8) & 0xff) & 0x0000ff00) ^
+          (enc_T1((d      ) & 0xff) & 0x000000ff) ^
           k);
 }
 
