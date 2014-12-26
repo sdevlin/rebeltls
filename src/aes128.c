@@ -317,10 +317,10 @@ void aes128_init(aes128_ctx *ctx, const byte *key, int dir)
   for (i = 4; i < 44; i += 1) {
     uint32 tmp = w[i-1];
     if ((i % 4) == 0) {
-      tmp = ((S((tmp >> 16) & 0xff) << 24) ^
-             (S((tmp >>  8) & 0xff) << 16) ^
-             (S((tmp      ) & 0xff) <<  8) ^
-             (S((tmp >> 24) & 0xff)      ) ^
+      tmp = ((S(tmp >> 16) << 24) ^
+             (S(tmp >>  8) << 16) ^
+             (S(tmp      ) <<  8) ^
+             (S(tmp >> 24)      ) ^
              Rcon[i/4]);
     }
     w[i] = w[i-4] ^ tmp;
@@ -342,10 +342,10 @@ aes128_ctx *aes128_new(const byte *key, int dir)
 
 static uint32 enc_roundstep(uint32 a, uint32 b, uint32 c, uint32 d, uint32 k)
 {
-  return (enc_T0((a >> 24) & 0xff) ^
-          enc_T1((b >> 16) & 0xff) ^
-          enc_T2((c >>  8) & 0xff) ^
-          enc_T3((d      ) & 0xff) ^
+  return (enc_T0(a >> 24) ^
+          enc_T1(b >> 16) ^
+          enc_T2(c >>  8) ^
+          enc_T3(d      ) ^
           k);
 }
 
@@ -359,10 +359,10 @@ static uint32 enc_roundstep(uint32 a, uint32 b, uint32 c, uint32 d, uint32 k)
 static uint32 enc_finalroundstep(uint32 a, uint32 b, uint32 c, uint32 d,
                                  uint32 k)
 {
-  return ((S((a >> 24) & 0xff) << 24) ^
-          (S((b >> 16) & 0xff) << 16) ^
-          (S((c >>  8) & 0xff) <<  8) ^
-          (S((d      ) & 0xff)      ) ^
+  return ((S(a >> 24) << 24) ^
+          (S(b >> 16) << 16) ^
+          (S(c >>  8) <<  8) ^
+          (S(d      )      ) ^
           k);
 }
 
