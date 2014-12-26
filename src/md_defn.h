@@ -26,12 +26,6 @@
     name##_init(ctx);                                               \
   }                                                                 \
                                                                     \
-  /* TODO maybe move this to a global utility package */            \
-  static uint min(uint a, uint b)                                   \
-  {                                                                 \
-    return a < b ? a : b;                                           \
-  }                                                                 \
-                                                                    \
   __attribute__ ((unused)) static const name##_ctx dummy;           \
   static const u8 pad[sizeof dummy.buf] = { 0x80 };                 \
   static const uint buflen = sizeof dummy.buf;                      \
@@ -44,7 +38,7 @@
                                                                     \
     while (mlen > 0) {                                              \
       pos = ctx->mlen % buflen;                                     \
-      take = min(buflen - pos, mlen);                               \
+      take = uint_min(buflen - pos, mlen);                          \
                                                                     \
       memcpy(ctx->buf + pos, m, take);                              \
       ctx->mlen += take;                                            \

@@ -19,14 +19,17 @@ typedef struct {
   u64 lo;
 } u128;
 
-#define DECLARE_UINT(bits)                          \
-  extern u##bits u##bits##_rotl(u##bits x, uint k); \
-  extern u##bits u##bits##_rotr(u##bits x, uint k);
+#define DECLARE_UINT(name)                      \
+  extern name name##_min(name x, name y);       \
+  extern name name##_max(name x, name y);       \
+  extern name name##_rotl(name x, uint k);      \
+  extern name name##_rotr(name x, uint k);
 
-DECLARE_UINT(8)
-DECLARE_UINT(16)
-DECLARE_UINT(32)
-DECLARE_UINT(64)
+DECLARE_UINT(uint)
+DECLARE_UINT(u8)
+DECLARE_UINT(u16)
+DECLARE_UINT(u32)
+DECLARE_UINT(u64)
 
 extern u24 u24_clamp(u24 x);
 

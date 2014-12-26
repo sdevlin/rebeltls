@@ -6,11 +6,6 @@
 #include "prf.h"
 #include "inttypes.h"
 
-static uint min(uint x, uint y)
-{
-  return x < y ? x : y;
-}
-
 extern void prf_expand(const hash_desc *desc,
                        const u8 *secret, uint secretlen,
                        const u8 *label, uint labellen,
@@ -40,7 +35,7 @@ extern void prf_expand(const hash_desc *desc,
     hmac_update(&ctx, seed, seedlen);
     hmac_final(&ctx, h);
 
-    take = min(outlen, desc->hashlen);
+    take = uint_min(outlen, desc->hashlen);
     memcpy(out, h, take);
     out += take;
     outlen -= take;

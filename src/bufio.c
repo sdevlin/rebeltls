@@ -2,11 +2,6 @@
 
 #include "io.h"
 
-static uint min(uint a, uint b)
-{
-  return a < b ? a : b;
-}
-
 static int bufio_tryread(io_src *src, u8 *buf, uint buflen)
 {
   u8 *srcbuf;
@@ -15,7 +10,7 @@ static int bufio_tryread(io_src *src, u8 *buf, uint buflen)
 
   srcbuf = src->buf.buf + src->buf.pos;
   srclen = src->buf.len - src->buf.pos;
-  n = min(buflen, srclen);
+  n = uint_min(buflen, srclen);
   memcpy(buf, srcbuf, n);
   src->buf.pos += n;
   return n;
@@ -29,7 +24,7 @@ static int bufio_trywrite(io_src *src, const u8 *buf, uint buflen)
 
   srcbuf = src->buf.buf + src->buf.pos;
   srclen = src->buf.len - src->buf.pos;
-  n = min(buflen, srclen);
+  n = uint_min(buflen, srclen);
   memcpy(srcbuf, buf, n);
   src->buf.pos += n;
   return n;
