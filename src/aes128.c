@@ -293,10 +293,10 @@ void aes128_init(aes128_ctx *ctx, const byte *key)
   for (i = 4; i < 44; i += 1) {
     uint32 tmp = w[i-1];
     if ((i % 4) == 0) {
-      tmp = (((S((tmp >> 16) & 0xff) << 24) |
-              (S((tmp >>  8) & 0xff) << 16) |
-              (S((tmp      ) & 0xff) <<  8) |
-              (S((tmp >> 24) & 0xff)      )) ^
+      tmp = ((S((tmp >> 16) & 0xff) << 24) ^
+             (S((tmp >>  8) & 0xff) << 16) ^
+             (S((tmp      ) & 0xff) <<  8) ^
+             (S((tmp >> 24) & 0xff)      ) ^
              Rcon[i/4]);
     }
     w[i] = w[i-4] ^ tmp;
