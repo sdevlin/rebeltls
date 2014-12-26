@@ -1,5 +1,3 @@
-#include <assert.h>
-
 #include "bindata.h"
 #include "inttypes.h"
 #include "md5.h"
@@ -31,13 +29,6 @@ static const u32 T[] = {
   0xf7537e82, 0xbd3af235, 0x2ad7d2bb, 0xeb86d391
 };
 
-static u32 rotl(u32 x, uint n)
-{
-  assert(n > 0);
-  assert(n < 32);
-  return (x << n) | (x >> (32-n));
-}
-
 static u32 f(u32 x, u32 y, u32 z)
 {
   return (x & y) | (~x & z);
@@ -58,8 +49,8 @@ static u32 i(u32 x, u32 y, u32 z)
   return y ^ (x | ~z);
 }
 
-#define OP(a, b, c, d, f, k, s, i)                \
-  a = b + rotl((a + f(b, c, d) + x[k] + T[i]), s)
+#define OP(a, b, c, d, f, k, s, i)                    \
+  a = b + u32_rotl((a + f(b, c, d) + x[k] + T[i]), s)
 
 void md5_compress(md5_ctx *ctx)
 {

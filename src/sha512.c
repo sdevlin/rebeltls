@@ -1,5 +1,3 @@
-#include <assert.h>
-
 #include "bindata.h"
 #include "inttypes.h"
 #include "md_defn.h"
@@ -55,13 +53,6 @@ static const u64 K[] = {
   0x5fcb6fab3ad6faec, 0x6c44198c4a475817
 };
 
-static u64 rotr(u64 x, uint n)
-{
-  assert(n > 0);
-  assert(n < 64);
-  return (x >> n) | (x << (64-n));
-}
-
 static u64 ch(u64 x, u64 y, u64 z)
 {
   return (x & y) ^ (~x & z);
@@ -74,22 +65,22 @@ static u64 maj(u64 x, u64 y, u64 z)
 
 static u64 S0(u64 x)
 {
-  return rotr(x, 28) ^ rotr(x, 34) ^ rotr(x, 39);
+  return u64_rotr(x, 28) ^ u64_rotr(x, 34) ^ u64_rotr(x, 39);
 }
 
 static u64 S1(u64 x)
 {
-  return rotr(x, 14) ^ rotr(x, 18) ^ rotr(x, 41);
+  return u64_rotr(x, 14) ^ u64_rotr(x, 18) ^ u64_rotr(x, 41);
 }
 
 static u64 s0(u64 x)
 {
-  return rotr(x, 1) ^ rotr(x, 8) ^ (x >> 7);
+  return u64_rotr(x, 1) ^ u64_rotr(x, 8) ^ (x >> 7);
 }
 
 static u64 s1(u64 x)
 {
-  return rotr(x, 19) ^ rotr(x, 61) ^ (x >> 6);
+  return u64_rotr(x, 19) ^ u64_rotr(x, 61) ^ (x >> 6);
 }
 
 void sha512_compress(sha512_ctx *ctx)

@@ -1,5 +1,3 @@
-#include <assert.h>
-
 #include "bindata.h"
 #include "inttypes.h"
 #include "md_defn.h"
@@ -31,13 +29,6 @@ static const u32 K[] = {
   0xca62c1d6, 0xca62c1d6, 0xca62c1d6, 0xca62c1d6, 0xca62c1d6,
   0xca62c1d6, 0xca62c1d6, 0xca62c1d6, 0xca62c1d6, 0xca62c1d6
 };
-
-static u32 rotl(u32 x, uint n)
-{
-  assert(n > 0);
-  assert(n < 32);
-  return (x << n) | (x >> (32-n));
-}
 
 static u32 ch(u32 x, u32 y, u32 z)
 {
@@ -78,7 +69,7 @@ void sha1_compress(sha1_ctx *ctx)
                  &w[0xc], &w[0xd], &w[0xe], &w[0xf]);
 
   for (i = 16; i < 80; i += 1) {
-    w[i] = rotl((w[i-3] ^ w[i-8] ^ w[i-14] ^ w[i-16]), 1);
+    w[i] = u32_rotl((w[i-3] ^ w[i-8] ^ w[i-14] ^ w[i-16]), 1);
   }
 
   a = ctx->h[0];
@@ -90,10 +81,10 @@ void sha1_compress(sha1_ctx *ctx)
   for (i = 0; i < 80; i += 1) {
     u32 T;
 
-    T = rotl(a, 5) + f[i](b, c, d) + e + K[i] + w[i];
+    T = u32_rotl(a, 5) + f[i](b, c, d) + e + K[i] + w[i];
     e = d;
     d = c;
-    c = rotl(b, 30);
+    c = u32_rotl(b, 30);
     b = a;
     a = T;
   }

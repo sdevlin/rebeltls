@@ -1,5 +1,3 @@
-#include <assert.h>
-
 #include "bindata.h"
 #include "inttypes.h"
 #include "md_defn.h"
@@ -29,13 +27,6 @@ static const u32 K[] = {
   0x90befffa, 0xa4506ceb, 0xbef9a3f7, 0xc67178f2
 };
 
-static u32 rotr(u32 x, uint n)
-{
-  assert(n > 0);
-  assert(n < 32);
-  return (x >> n) | (x << (32-n));
-}
-
 static u32 ch(u32 x, u32 y, u32 z)
 {
   return (x & y) ^ (~x & z);
@@ -48,22 +39,22 @@ static u32 maj(u32 x, u32 y, u32 z)
 
 static u32 S0(u32 x)
 {
-  return rotr(x, 2) ^ rotr(x, 13) ^ rotr(x, 22);
+  return u32_rotr(x, 2) ^ u32_rotr(x, 13) ^ u32_rotr(x, 22);
 }
 
 static u32 S1(u32 x)
 {
-  return rotr(x, 6) ^ rotr(x, 11) ^ rotr(x, 25);
+  return u32_rotr(x, 6) ^ u32_rotr(x, 11) ^ u32_rotr(x, 25);
 }
 
 static u32 s0(u32 x)
 {
-  return rotr(x, 7) ^ rotr(x, 18) ^ (x >> 3);
+  return u32_rotr(x, 7) ^ u32_rotr(x, 18) ^ (x >> 3);
 }
 
 static u32 s1(u32 x)
 {
-  return rotr(x, 17) ^ rotr(x, 19) ^ (x >> 10);
+  return u32_rotr(x, 17) ^ u32_rotr(x, 19) ^ (x >> 10);
 }
 
 void sha256_compress(sha256_ctx *ctx)
