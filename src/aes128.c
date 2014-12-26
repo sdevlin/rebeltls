@@ -274,11 +274,6 @@ static const uint32 *enc_T2 = (const uint32 *)(enc_T + 2);
 
 static const uint32 *enc_T3 = (const uint32 *)(enc_T + 3);
 
-static uint32 rotr(uint32 w, unsigned int k)
-{
-  return (w >> k) | (w << (32-k));
-}
-
 static const byte S[] = {
   0x63, 0x7c, 0x77, 0x7b, 0xf2, 0x6b, 0x6f, 0xc5,
   0x30, 0x01, 0x67, 0x2b, 0xfe, 0xd7, 0xab, 0x76,
@@ -324,6 +319,11 @@ static uint32 sub_word(uint32 w)
     b[i] = S[b[i]];
   }
   return w;
+}
+
+static uint32 rotr(uint32 w, uint k)
+{
+  return (w >> k) | (w << (32-k));
 }
 
 static uint32 rot_word(uint32 w)
