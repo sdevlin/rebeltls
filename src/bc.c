@@ -2,6 +2,8 @@
 
 #include "bc.h"
 
+/* TODO this needs rethinking */
+
 #define DEFINE_BC(name, klen, blen)                         \
   static void name##_bc_init(bc_ctx *ctx, const byte *key)  \
   {                                                         \
@@ -39,9 +41,10 @@
 
 /* eliding trailing semicolon so it will be required on macro invocation */
 
-#include "aes128.h"
-DEFINE_BC(aes128, 16, 16);
+/* #include "aes128.h" */
+/* DEFINE_BC(aes128, 16, 16); */
 
 const bc_defn *bc_defns[] = {
-  &aes128_defn
+  /* &aes128_defn */
+  NULL
 };

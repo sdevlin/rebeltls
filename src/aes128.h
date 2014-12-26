@@ -3,13 +3,21 @@
 
 #include "inttypes.h"
 
+enum {
+  DIR_ENCRYPT,
+  DIR_DECRYPT
+};
+
 typedef struct {
+  int dir;
   uint32 w[44];
 } aes128_ctx;
 
-void aes128_init(aes128_ctx *ctx, const byte *key);
+void aes128_init(aes128_ctx *ctx, const byte *key, int dir);
 
-void aes128_encrypt(const aes128_ctx *ctx, const byte *p, byte *c);
-void aes128_decrypt(const aes128_ctx *ctx, const byte *c, byte *p);
+void aes128_permute(const aes128_ctx *ctx, const byte *in, byte *out);
+
+void aes128_encrypt(const byte *key, const byte *p, byte *c);
+void aes128_decrypt(const byte *key, const byte *c, byte *p);
 
 #endif

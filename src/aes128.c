@@ -282,10 +282,13 @@ static uint32 Rcon[] = {
   0x20000000, 0x40000000, 0x80000000, 0x1b000000, 0x36000000
 };
 
-void aes128_init(aes128_ctx *ctx, const byte *key)
+void aes128_init(aes128_ctx *ctx, const byte *key, int dir)
 {
   int i;
   uint32 *w;
+
+  log_assert(dir == DIR_ENCRYPT || dir == DIR_DECRYPT, "bad dir %d", dir);
+  ctx->dir = dir;
 
   w = ctx->w;
   bindata_unpack(key, "> L[4]", w);
@@ -300,6 +303,10 @@ void aes128_init(aes128_ctx *ctx, const byte *key)
              Rcon[i/4]);
     }
     w[i] = w[i-4] ^ tmp;
+  }
+
+  if (dir == DIR_DECRYPT) {
+    /* TODO implement inverse cipher key expansion */
   }
 }
 
@@ -329,7 +336,7 @@ static uint32 enc_finalroundstep(uint32 a, uint32 b, uint32 c, uint32 d,
           k);
 }
 
-void aes128_encrypt(const aes128_ctx *ctx, const byte *p, byte *c)
+static void encrypt(const aes128_ctx *ctx, const byte *p, byte *c)
 {
   const uint32 *w;
   uint32 m[4];
@@ -363,7 +370,7 @@ void aes128_encrypt(const aes128_ctx *ctx, const byte *p, byte *c)
 }
 
 /* TODO doesn't work currently */
-void aes128_decrypt(const aes128_ctx *ctx, const byte *c, byte *p)
+static void decrypt(const aes128_ctx *ctx, const byte *c, byte *p)
 {
   const uint32 *w;
   uint32 m[4];
@@ -372,4 +379,35 @@ void aes128_decrypt(const aes128_ctx *ctx, const byte *c, byte *p)
   bindata_unpack(c, "> L[4]", m);
 
   bindata_pack(p, "> L[4]", m);
+}
+
+void aes128_permute(const aes128_ctx *ctx, const byte *in, byte *out)
+{
+  switch (ctx->dir) {
+  case DIR_ENCRYPT:
+    encrypt(ctx, in, out);
+    break;
+  case DIR_DECRYPT:
+    decrypt(ctx, in, out);
+    break;
+  default:
+    log_abort("bad dir %d", ctx->dir);
+    break;
+  }
+}
+
+void aes128_encrypt(const byte *key, const byte *p, byte *c)
+{
+  aes128_ctx ctx;
+
+  aes128_init(&ctx, key, DIR_ENCRYPT);
+  aes128_permute(&ctx, p, c);
+}
+
+void aes128_decrypt(const byte *key, const byte *c, byte *p)
+{
+  aes128_ctx ctx;
+
+  aes128_init(&ctx, key, DIR_DECRYPT);
+  aes128_permute(&ctx, c, p);
 }

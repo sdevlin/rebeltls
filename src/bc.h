@@ -4,6 +4,8 @@
 #include "aes128.h"
 #include "inttypes.h"
 
+/* TODO this needs rethinking */
+
 typedef aes128_ctx bc_ctx;
 
 #define BC_MAX_KEYLEN 16
@@ -18,11 +20,11 @@ typedef struct {
   void (*decrypt)(const bc_ctx *ctx, const byte *c, byte *p);
 } bc_defn;
 
-extern const bc_defn aes128_defn;
+/* extern const bc_defn aes128_defn; */
 
-enum {
-  BC_DEFN_AES128
-};
+/* enum { */
+/*   BC_DEFN_AES128 */
+/* }; */
 
 extern const bc_defn *bc_defns[];
 
