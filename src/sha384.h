@@ -6,6 +6,8 @@
 
 typedef sha512_ctx sha384_ctx;
 
+extern const u64 sha384_initstate[8];
+
 extern void sha384_init(sha384_ctx *ctx);
 extern sha384_ctx *sha384_new(void);
 
