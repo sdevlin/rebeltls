@@ -9,7 +9,7 @@
   x = y;                                        \
   y = tmp;
 
-void rc4_init(rc4_ctx *ctx, const byte *key, uint keylen)
+void rc4_init(rc4_ctx *ctx, const uint8 *key, uint keylen)
 {
   uint i;
   uint8 j, tmp;
@@ -30,7 +30,7 @@ void rc4_init(rc4_ctx *ctx, const byte *key, uint keylen)
   ctx->j = 0;
 }
 
-void rc4_generate(rc4_ctx *ctx, byte *out, uint outlen)
+void rc4_generate(rc4_ctx *ctx, uint8 *out, uint outlen)
 {
   uint8 i, j, tmp;
   uint8 *S;
@@ -50,7 +50,7 @@ void rc4_generate(rc4_ctx *ctx, byte *out, uint outlen)
   ctx->j = j;
 }
 
-void rc4_update(rc4_ctx *ctx, const byte *p, uint plen, byte *c)
+void rc4_update(rc4_ctx *ctx, const uint8 *p, uint plen, uint8 *c)
 {
   rc4_generate(ctx, c, plen);
   bytes_xor(c, p, c, plen);
@@ -64,8 +64,8 @@ void rc4_final(rc4_ctx *ctx)
   memset(ctx->S, 0, sizeof ctx->S);
 }
 
-void rc4_encrypt(const byte *key, uint keylen,
-                 const byte *p, uint plen, byte *c)
+void rc4_encrypt(const uint8 *key, uint keylen,
+                 const uint8 *p, uint plen, uint8 *c)
 {
   rc4_ctx ctx;
   rc4_init(&ctx, key, keylen);
@@ -73,8 +73,8 @@ void rc4_encrypt(const byte *key, uint keylen,
   rc4_final(&ctx);
 }
 
-void rc4_decrypt(const byte *key, uint keylen,
-                 const byte *c, uint clen, byte *p)
+void rc4_decrypt(const uint8 *key, uint keylen,
+                 const uint8 *c, uint clen, uint8 *p)
 {
   rc4_encrypt(key, keylen, c, clen, p);
 }

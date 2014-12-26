@@ -14,10 +14,10 @@ typedef aes128_ctx bc_ctx;
 typedef struct {
   uint keylen;
   uint blocklen;
-  void (*init)(bc_ctx *ctx, const byte *key);
-  bc_ctx *(*new)(const byte *key);
-  void (*encrypt)(const bc_ctx *ctx, const byte *p, byte *c);
-  void (*decrypt)(const bc_ctx *ctx, const byte *c, byte *p);
+  void (*init)(bc_ctx *ctx, const uint8 *key);
+  bc_ctx *(*new)(const uint8 *key);
+  void (*encrypt)(const bc_ctx *ctx, const uint8 *p, uint8 *c);
+  void (*decrypt)(const bc_ctx *ctx, const uint8 *c, uint8 *p);
 } bc_defn;
 
 /* extern const bc_defn aes128_defn; */

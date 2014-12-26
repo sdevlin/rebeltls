@@ -6,7 +6,7 @@
 typedef struct {
   uint mlen;
   uint32 h[8];
-  byte buf[64];
+  uint8 buf[64];
 } sha256_ctx;
 
 extern const uint32 sha256_initstate[8];
@@ -18,9 +18,9 @@ extern void sha256_reset(sha256_ctx *ctx);
 
 extern void sha256_compress(sha256_ctx *ctx);
 
-extern void sha256_update(sha256_ctx *ctx, const byte *m, uint mlen);
-extern void sha256_final(sha256_ctx *ctx, byte *h);
+extern void sha256_update(sha256_ctx *ctx, const uint8 *m, uint mlen);
+extern void sha256_final(sha256_ctx *ctx, uint8 *h);
 
-extern void sha256_digest(const byte *m, uint mlen, byte *h);
+extern void sha256_digest(const uint8 *m, uint mlen, uint8 *h);
 
 #endif

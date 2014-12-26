@@ -3,7 +3,7 @@
 #include "bytes.h"
 #include "inttypes.h"
 
-void bytes_xor(byte *x, const byte *y, const byte *z, uint len)
+void bytes_xor(uint8 *x, const uint8 *y, const uint8 *z, uint len)
 {
   uint i;
 
@@ -12,7 +12,7 @@ void bytes_xor(byte *x, const byte *y, const byte *z, uint len)
   }
 }
 
-void bytes_zero(byte *buf, uint buflen)
+void bytes_zero(uint8 *buf, uint buflen)
 {
   memset(buf, 0, buflen);
 }

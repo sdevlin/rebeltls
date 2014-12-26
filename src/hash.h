@@ -15,9 +15,9 @@ typedef struct {
   uint blocklen;
   void (*init)(hash_ctx *ctx);
   hash_ctx *(*new)(void);
-  void (*update)(hash_ctx *ctx, const byte *m, uint mlen);
-  void (*final)(hash_ctx *ctx, byte *h);
-  void (*digest)(const byte *m, uint mlen, byte *h);
+  void (*update)(hash_ctx *ctx, const uint8 *m, uint mlen);
+  void (*final)(hash_ctx *ctx, uint8 *h);
+  void (*digest)(const uint8 *m, uint mlen, uint8 *h);
 } hash_desc;
 
 extern const hash_desc md5_desc;

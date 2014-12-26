@@ -303,7 +303,7 @@ static uint32 Rcon[] = {
   0x20000000, 0x40000000, 0x80000000, 0x1b000000, 0x36000000
 };
 
-void aes128_init(aes128_ctx *ctx, const byte *key, int dir)
+void aes128_init(aes128_ctx *ctx, const uint8 *key, int dir)
 {
   int i;
   uint32 *w;
@@ -331,7 +331,7 @@ void aes128_init(aes128_ctx *ctx, const byte *key, int dir)
   }
 }
 
-aes128_ctx *aes128_new(const byte *key, int dir)
+aes128_ctx *aes128_new(const uint8 *key, int dir)
 {
   aes128_ctx *ctx;
 
@@ -366,7 +366,7 @@ static uint32 enc_finalroundstep(uint32 a, uint32 b, uint32 c, uint32 d,
           k);
 }
 
-static void encrypt(const aes128_ctx *ctx, const byte *p, byte *c)
+static void encrypt(const aes128_ctx *ctx, const uint8 *p, uint8 *c)
 {
   const uint32 *w;
   uint32 m[4];
@@ -400,7 +400,7 @@ static void encrypt(const aes128_ctx *ctx, const byte *p, byte *c)
 }
 
 /* TODO doesn't work currently */
-static void decrypt(const aes128_ctx *ctx, const byte *c, byte *p)
+static void decrypt(const aes128_ctx *ctx, const uint8 *c, uint8 *p)
 {
   const uint32 *w;
   uint32 m[4];
@@ -411,7 +411,7 @@ static void decrypt(const aes128_ctx *ctx, const byte *c, byte *p)
   bindata_pack(p, "> L[4]", m);
 }
 
-void aes128_permute(const aes128_ctx *ctx, const byte *in, byte *out)
+void aes128_permute(const aes128_ctx *ctx, const uint8 *in, uint8 *out)
 {
   switch (ctx->dir) {
   case DIR_ENCRYPT:
@@ -426,7 +426,7 @@ void aes128_permute(const aes128_ctx *ctx, const byte *in, byte *out)
   }
 }
 
-void aes128_encrypt(const byte *key, const byte *p, byte *c)
+void aes128_encrypt(const uint8 *key, const uint8 *p, uint8 *c)
 {
   aes128_ctx ctx;
 
@@ -434,7 +434,7 @@ void aes128_encrypt(const byte *key, const byte *p, byte *c)
   aes128_permute(&ctx, p, c);
 }
 
-void aes128_decrypt(const byte *key, const byte *c, byte *p)
+void aes128_decrypt(const uint8 *key, const uint8 *c, uint8 *p)
 {
   aes128_ctx ctx;
 

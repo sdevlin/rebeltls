@@ -32,10 +32,10 @@
 /*   } */
 /* } */
 
-static byte zero[16];
+static uint8 zero[16];
 
 void gcm_init(gcm_ctx *ctx, const bc_defn *defn,
-              const byte *key, const byte *iv, int dir)
+              const uint8 *key, const uint8 *iv, int dir)
 {
   log_assert(defn->keylen == 16, "bad keylen: %d", defn->keylen);
 
@@ -47,8 +47,8 @@ void gcm_init(gcm_ctx *ctx, const bc_defn *defn,
   ctx->dir = dir;
 }
 
-gcm_ctx *gcm_new(const bc_defn *defn, const byte *key,
-                 const byte *iv, int dir)
+gcm_ctx *gcm_new(const bc_defn *defn, const uint8 *key,
+                 const uint8 *iv, int dir)
 {
   gcm_ctx *ctx;
 
@@ -58,30 +58,30 @@ gcm_ctx *gcm_new(const bc_defn *defn, const byte *key,
 }
 
 void gcm_updatead(__attribute__ ((unused)) gcm_ctx *ctx,
-                  __attribute__ ((unused)) const byte *ad,
+                  __attribute__ ((unused)) const uint8 *ad,
                   __attribute__ ((unused)) uint adlen)
 {
 
 }
 
 void gcm_update(__attribute__ ((unused)) gcm_ctx *ctx,
-                __attribute__ ((unused)) const byte *in,
-                __attribute__ ((unused)) byte *out,
+                __attribute__ ((unused)) const uint8 *in,
+                __attribute__ ((unused)) uint8 *out,
                 __attribute__ ((unused)) uint len)
 {
 
 }
 
 void gcm_final(__attribute__ ((unused)) gcm_ctx *ctx,
-               __attribute__ ((unused)) byte *tag)
+               __attribute__ ((unused)) uint8 *tag)
 {
 
 }
 
-void gcm_encrypt(const bc_defn *defn, const byte *key,
-                 const byte *ad, uint adlen,
-                 const byte *p, uint plen,
-                 byte *c, byte *tag)
+void gcm_encrypt(const bc_defn *defn, const uint8 *key,
+                 const uint8 *ad, uint adlen,
+                 const uint8 *p, uint plen,
+                 uint8 *c, uint8 *tag)
 {
   gcm_ctx ctx;
 
@@ -91,10 +91,10 @@ void gcm_encrypt(const bc_defn *defn, const byte *key,
   gcm_final(&ctx, tag);
 }
 
-/* void gcm_decrypt(const bc_defn *defn, const byte *key, */
-/*                  const byte *ad, uint adlen, */
-/*                  const byte *c, uint clen, */
-/*                  byte *p, const byte *tag) */
+/* void gcm_decrypt(const bc_defn *defn, const uint8 *key, */
+/*                  const uint8 *ad, uint adlen, */
+/*                  const uint8 *c, uint clen, */
+/*                  uint8 *p, const uint8 *tag) */
 /* { */
 
 /* } */

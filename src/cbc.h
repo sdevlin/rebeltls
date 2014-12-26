@@ -16,9 +16,9 @@ typedef struct {
 } cbc_ctx;
 
 extern void cbc_init(cbc_ctx *ctx, const struct bc_defn *cdefn,
-                     const byte *key, const byte *iv, int dir);
+                     const uint8 *key, const uint8 *iv, int dir);
 extern cbc_ctx *cbc_new(const struct bc_defn *cdefn,
-                        const byte *key, const byte *iv, int dir);
+                        const uint8 *key, const uint8 *iv, int dir);
 
 extern void cbc_update(cbc_ctx *ctx);
 

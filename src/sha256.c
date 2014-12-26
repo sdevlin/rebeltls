@@ -123,7 +123,7 @@ static void packmlen(sha256_ctx *ctx)
   bindata_pack(ctx->buf + 56, "> Q", ctx->mlen << 3);
 }
 
-static void packh(sha256_ctx *ctx, byte *h)
+static void packh(sha256_ctx *ctx, uint8 *h)
 {
   bindata_pack(h, "> L[8]", ctx->h);
 }

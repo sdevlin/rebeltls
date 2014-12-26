@@ -4,7 +4,6 @@
 #include <stddef.h>
 #include <stdint.h>
 
-typedef unsigned char byte;
 typedef unsigned uint;
 typedef int8_t int8;
 typedef uint8_t uint8;

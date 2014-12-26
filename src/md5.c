@@ -154,7 +154,7 @@ static void packmlen(md5_ctx *ctx)
   bindata_pack(ctx->buf + 56, "< Q", ctx->mlen << 3);
 }
 
-static void packh(md5_ctx *ctx, byte *h)
+static void packh(md5_ctx *ctx, uint8 *h)
 {
   bindata_pack(h, "< L[4]", ctx->h);
 }

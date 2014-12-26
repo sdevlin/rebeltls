@@ -7,7 +7,7 @@ static int fd = -1;
 
 static const int max_readlen = 1 << 20;
 
-void random_bytes(byte *buf, uint buflen)
+void random_bytes(uint8 *buf, uint buflen)
 {
   uint n;
 

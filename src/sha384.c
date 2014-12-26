@@ -39,7 +39,7 @@ void sha384_compress(sha384_ctx *ctx)
   sha512_compress(ctx);
 }
 
-static byte *md_buffer(md_ctx *ctx)
+static uint8 *md_buffer(md_ctx *ctx)
 {
   return ((sha384_ctx *)ctx)->buf;
 }
@@ -62,18 +62,18 @@ static const md_defn defn = {
   .packmlen = &md_packmlen
 };
 
-void sha384_update(sha384_ctx *ctx, const byte *m, uint mlen)
+void sha384_update(sha384_ctx *ctx, const uint8 *m, uint mlen)
 {
   md_update(&defn, (md_ctx *)ctx, m, mlen);
 }
 
-void sha384_final(sha384_ctx *ctx, byte *h)
+void sha384_final(sha384_ctx *ctx, uint8 *h)
 {
   md_final(&defn, (md_ctx *)ctx);
   bindata_pack(h, "> Q[6]", ctx->h);
 }
 
-void sha384_digest(const byte *m, uint mlen, byte *h)
+void sha384_digest(const uint8 *m, uint mlen, uint8 *h)
 {
   sha384_ctx ctx;
 

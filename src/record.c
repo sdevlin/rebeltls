@@ -6,7 +6,7 @@
 #include "inttypes.h"
 
 void record_init(struct record *rec, uint8 content_type,
-                 byte *fragment, uint16 length)
+                 uint8 *fragment, uint16 length)
 {
   /* TODO validate content type */
   rec->content_type = content_type;
@@ -20,7 +20,7 @@ void record_init(struct record *rec, uint8 content_type,
 
 int record_read(io *io, struct record *rec)
 {
-  byte buf[5];
+  uint8 buf[5];
 
   io_read(io, buf, sizeof buf);
 
@@ -37,7 +37,7 @@ int record_read(io *io, struct record *rec)
 
 void record_write(io *io, const struct record *rec)
 {
-  byte buf[5];
+  uint8 buf[5];
 
   bindata_pack(buf, "! B BB H",
                rec->content_type,

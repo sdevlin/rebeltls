@@ -5,9 +5,9 @@
 #include "inttypes.h"
 
 extern void prf_expand(const hash_desc *desc,
-                       const byte *secret, uint secretlen,
-                       const byte *label, uint labellen,
-                       const byte *seed, uint seedlen,
-                       byte *out, uint outlen);
+                       const uint8 *secret, uint secretlen,
+                       const uint8 *label, uint labellen,
+                       const uint8 *seed, uint seedlen,
+                       uint8 *out, uint outlen);
 
 #endif

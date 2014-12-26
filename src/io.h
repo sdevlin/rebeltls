@@ -6,7 +6,7 @@
 typedef union {
   int fd;
   struct {
-    byte *buf;
+    uint8 *buf;
     uint len;
     uint pos;
   } buf;
@@ -19,18 +19,18 @@ typedef struct {
 
 void io_fileinit(io *io, int fd);
 void io_netinit(io *io, int fd);
-void io_bufinit(io *io, byte *buf, uint buflen);
+void io_bufinit(io *io, uint8 *buf, uint buflen);
 
-int io_tryread(io *io, byte *buf, uint buflen);
-int io_trywrite(io *io, const byte *buf, uint buflen);
-int io_read(io *io, byte *buf, uint buflen);
-int io_write(io *io, const byte *buf, uint buflen);
+int io_tryread(io *io, uint8 *buf, uint buflen);
+int io_trywrite(io *io, const uint8 *buf, uint buflen);
+int io_read(io *io, uint8 *buf, uint buflen);
+int io_write(io *io, const uint8 *buf, uint buflen);
 
 struct io_defn {
-  int (*tryread)(io_src *src, byte *buf, uint buflen);
-  int (*trywrite)(io_src *src, const byte *buf, uint buflen);
-  int (*read)(io_src *src, byte *buf, uint buflen);
-  int (*write)(io_src *src, const byte *buf, uint buflen);
+  int (*tryread)(io_src *src, uint8 *buf, uint buflen);
+  int (*trywrite)(io_src *src, const uint8 *buf, uint buflen);
+  int (*read)(io_src *src, uint8 *buf, uint buflen);
+  int (*write)(io_src *src, const uint8 *buf, uint buflen);
 };
 
 extern const struct io_defn fileio_defn;

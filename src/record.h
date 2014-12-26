@@ -20,12 +20,12 @@ struct record {
     uint8 minor;
   } protocol_version;
   uint16 length;
-  byte fragment[RECORD_MAX_LEN];
+  uint8 fragment[RECORD_MAX_LEN];
 };
 
 extern void record_init(struct record *rec,
                         uint8 content_type,
-                        byte *fragment,
+                        uint8 *fragment,
                         uint16 length);
 
 extern int record_read(io *io, struct record *rec);

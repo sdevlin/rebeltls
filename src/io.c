@@ -12,7 +12,7 @@ void io_netinit(io *io, int fd)
   io->src.fd = fd;
 }
 
-void io_bufinit(io *io, byte *buf, uint buflen)
+void io_bufinit(io *io, uint8 *buf, uint buflen)
 {
   io->defn = &netio_defn;
   io->src.buf.buf = buf;
@@ -20,22 +20,22 @@ void io_bufinit(io *io, byte *buf, uint buflen)
   io->src.buf.pos = 0;
 }
 
-int io_tryread(io *io, byte *buf, uint buflen)
+int io_tryread(io *io, uint8 *buf, uint buflen)
 {
   return io->defn->tryread(&io->src, buf, buflen);
 }
 
-int io_trywrite(io *io, const byte *buf, uint buflen)
+int io_trywrite(io *io, const uint8 *buf, uint buflen)
 {
   return io->defn->trywrite(&io->src, buf, buflen);
 }
 
-int io_read(io *io, byte *buf, uint buflen)
+int io_read(io *io, uint8 *buf, uint buflen)
 {
   return io->defn->read(&io->src, buf, buflen);
 }
 
-int io_write(io *io, const byte *buf, uint buflen)
+int io_write(io *io, const uint8 *buf, uint buflen)
 {
   return io->defn->write(&io->src, buf, buflen);
 }

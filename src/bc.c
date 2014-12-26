@@ -5,12 +5,12 @@
 /* TODO this needs rethinking */
 
 #define DEFINE_BC(name, klen, blen)                         \
-  static void name##_bc_init(bc_ctx *ctx, const byte *key)  \
+  static void name##_bc_init(bc_ctx *ctx, const uint8 *key) \
   {                                                         \
     name##_init((name##_ctx *)ctx, key);                    \
   }                                                         \
                                                             \
-  static bc_ctx *name##_bc_new(const byte *key)             \
+  static bc_ctx *name##_bc_new(const uint8 *key)            \
   {                                                         \
     bc_ctx *ctx;                                            \
     ctx = malloc(sizeof *ctx);                              \
@@ -19,13 +19,13 @@
   }                                                         \
                                                             \
   static void name##_bc_encrypt(const bc_ctx *ctx,          \
-                                const byte *p, byte *c)     \
+                                const uint8 *p, uint8 *c)   \
   {                                                         \
     name##_encrypt((const name##_ctx *)ctx, p, c);          \
   }                                                         \
                                                             \
   static void name##_bc_decrypt(const bc_ctx *ctx,          \
-                                const byte *c, byte *p)     \
+                                const uint8 *c, uint8 *p)   \
   {                                                         \
     name##_decrypt((const name##_ctx *)ctx, c, p);          \
   }                                                         \

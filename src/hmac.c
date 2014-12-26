@@ -5,7 +5,7 @@
 #include "hmac.h"
 #include "bytes.h"
 
-static const byte ipad[] = {
+static const uint8 ipad[] = {
   0x36, 0x36, 0x36, 0x36, 0x36, 0x36, 0x36, 0x36,
   0x36, 0x36, 0x36, 0x36, 0x36, 0x36, 0x36, 0x36,
   0x36, 0x36, 0x36, 0x36, 0x36, 0x36, 0x36, 0x36,
@@ -25,7 +25,7 @@ static const byte ipad[] = {
 };
 
 /* ipad ^ opad */
-static const byte iopad[] = {
+static const uint8 iopad[] = {
   0x6a, 0x6a, 0x6a, 0x6a, 0x6a, 0x6a, 0x6a, 0x6a,
   0x6a, 0x6a, 0x6a, 0x6a, 0x6a, 0x6a, 0x6a, 0x6a,
   0x6a, 0x6a, 0x6a, 0x6a, 0x6a, 0x6a, 0x6a, 0x6a,
@@ -45,9 +45,9 @@ static const byte iopad[] = {
 };
 
 void hmac_init(hmac_ctx *ctx, const hash_desc *desc,
-               const byte *key, uint keylen)
+               const uint8 *key, uint keylen)
 {
-  byte k[HASH_MAX_BLOCKLEN];
+  uint8 k[HASH_MAX_BLOCKLEN];
 
   assert(sizeof ipad >= desc->blocklen);
   assert(sizeof iopad >= desc->blocklen);
@@ -73,7 +73,7 @@ void hmac_init(hmac_ctx *ctx, const hash_desc *desc,
   ctx->tmpctx = ctx->ictx;
 }
 
-hmac_ctx *hmac_new(const hash_desc *desc, const byte *key, uint keylen)
+hmac_ctx *hmac_new(const hash_desc *desc, const uint8 *key, uint keylen)
 {
   hmac_ctx *ctx;
   ctx = malloc(sizeof *ctx);
@@ -86,12 +86,12 @@ void hmac_reset(hmac_ctx *ctx)
   ctx->tmpctx = ctx->ictx;
 }
 
-void hmac_update(hmac_ctx *ctx, const byte *m, uint mlen)
+void hmac_update(hmac_ctx *ctx, const uint8 *m, uint mlen)
 {
   ctx->hash_desc->update(&ctx->tmpctx, m, mlen);
 }
 
-void hmac_final(hmac_ctx *ctx, byte *h)
+void hmac_final(hmac_ctx *ctx, uint8 *h)
 {
   ctx->hash_desc->final(&ctx->tmpctx, h);
   ctx->tmpctx = ctx->octx;
@@ -99,8 +99,8 @@ void hmac_final(hmac_ctx *ctx, byte *h)
   ctx->hash_desc->final(&ctx->tmpctx, h);
 }
 
-void hmac_digest(const hash_desc *desc, const byte *key, uint keylen,
-                 const byte *m, uint mlen, byte *h)
+void hmac_digest(const hash_desc *desc, const uint8 *key, uint keylen,
+                 const uint8 *m, uint mlen, uint8 *h)
 {
   hmac_ctx ctx;
   hmac_init(&ctx, desc, key, keylen);

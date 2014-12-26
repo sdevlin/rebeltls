@@ -17,12 +17,12 @@
   }                                                         \
                                                             \
   static void name##_hash_update(hash_ctx *ctx,             \
-                                 const byte *m, uint mlen)  \
+                                 const uint8 *m, uint mlen) \
   {                                                         \
     name##_update((name##_ctx *)ctx, m, mlen);              \
   }                                                         \
                                                             \
-  static void name##_hash_final(hash_ctx *ctx, byte *h)     \
+  static void name##_hash_final(hash_ctx *ctx, uint8 *h)    \
   {                                                         \
     name##_final((name##_ctx *)ctx, h);                     \
   }                                                         \

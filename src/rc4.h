@@ -9,16 +9,16 @@ typedef struct {
   uint8 S[256];
 } rc4_ctx;
 
-extern void rc4_init(rc4_ctx *ctx, const byte *key, uint keylen);
+extern void rc4_init(rc4_ctx *ctx, const uint8 *key, uint keylen);
 
-extern void rc4_generate(rc4_ctx *ctx, byte *out, uint outlen);
+extern void rc4_generate(rc4_ctx *ctx, uint8 *out, uint outlen);
 
-extern void rc4_update(rc4_ctx *ctx, const byte *p, uint plen, byte *c);
+extern void rc4_update(rc4_ctx *ctx, const uint8 *p, uint plen, uint8 *c);
 extern void rc4_final(rc4_ctx *ctx);
 
-extern void rc4_encrypt(const byte *key, uint keylen,
-                        const byte *p, uint plen, byte *c);
-extern void rc4_decrypt(const byte *key, uint keylen,
-                        const byte *c, uint clen, byte *p);
+extern void rc4_encrypt(const uint8 *key, uint keylen,
+                        const uint8 *p, uint plen, uint8 *c);
+extern void rc4_decrypt(const uint8 *key, uint keylen,
+                        const uint8 *c, uint clen, uint8 *p);
 
 #endif

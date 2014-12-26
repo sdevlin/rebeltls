@@ -149,7 +149,7 @@ static void packmlen(sha512_ctx *ctx)
   bindata_pack(ctx->buf + 112, "> QQ", 0, ctx->mlen << 3);
 }
 
-static void packh(sha512_ctx *ctx, byte *h)
+static void packh(sha512_ctx *ctx, uint8 *h)
 {
   bindata_pack(h, "> Q[8]", ctx->h);
 }

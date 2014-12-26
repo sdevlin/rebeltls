@@ -3,8 +3,8 @@
 
 #include "inttypes.h"
 
-extern void bytes_xor(byte *x, const byte *y, const byte *z, uint len);
+extern void bytes_xor(uint8 *x, const uint8 *y, const uint8 *z, uint len);
 
-extern void bytes_zero(byte *buf, uint buflen);
+extern void bytes_zero(uint8 *buf, uint buflen);
 
 #endif
