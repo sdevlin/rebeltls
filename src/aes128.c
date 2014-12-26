@@ -359,10 +359,10 @@ static uint32 enc_roundstep(uint32 a, uint32 b, uint32 c, uint32 d, uint32 k)
 static uint32 enc_finalroundstep(uint32 a, uint32 b, uint32 c, uint32 d,
                                  uint32 k)
 {
-  return ((enc_T2((a >> 24) & 0xff) & 0xff000000) ^
-          (enc_T3((b >> 16) & 0xff) & 0x00ff0000) ^
-          (enc_T0((c >>  8) & 0xff) & 0x0000ff00) ^
-          (enc_T1((d      ) & 0xff) & 0x000000ff) ^
+  return ((S((a >> 24) & 0xff) << 24) ^
+          (S((b >> 16) & 0xff) << 16) ^
+          (S((c >>  8) & 0xff) <<  8) ^
+          (S((d      ) & 0xff)      ) ^
           k);
 }
 
