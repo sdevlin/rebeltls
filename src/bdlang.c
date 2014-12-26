@@ -47,10 +47,10 @@ static int isinttype(int c)
   }
 }
 
-static uint64 readint(const char **srcp)
+static u64 readint(const char **srcp)
 {
   const char *src;
-  uint64 val;
+  u64 val;
   int c;
 
   src = *srcp;

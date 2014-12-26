@@ -6,52 +6,52 @@
 #include "inttypes.h"
 #include "vector.h"
 
-static uint pack_int8(uint8 *buf, int8 n)
+static uint pack_i8(u8 *buf, i8 n)
 {
   buf[0] = n;
   return sizeof n;
 }
 
-static uint pack_uint8(uint8 *buf, uint8 n)
+static uint pack_u8(u8 *buf, u8 n)
 {
   buf[0] = n;
   return sizeof n;
 }
 
-static uint nat_pack_int16(uint8 *buf, int16 n)
+static uint nat_pack_i16(u8 *buf, i16 n)
 {
-  *(int16 *)buf = n;
+  *(i16 *)buf = n;
   return sizeof n;
 }
 
-static uint le_pack_int16(uint8 *buf, int16 n)
+static uint le_pack_i16(u8 *buf, i16 n)
 {
   buf[0] = 0xff & n;
   buf[1] = 0xff & (n >> 8);
   return sizeof n;
 }
 
-static uint be_pack_int16(uint8 *buf, int16 n)
+static uint be_pack_i16(u8 *buf, i16 n)
 {
   buf[1] = 0xff & n;
   buf[0] = 0xff & (n >> 8);
   return sizeof n;
 }
 
-static uint nat_pack_uint16(uint8 *buf, uint16 n)
+static uint nat_pack_u16(u8 *buf, u16 n)
 {
-  *(uint16 *)buf = n;
+  *(u16 *)buf = n;
   return sizeof n;
 }
 
-static uint le_pack_uint16(uint8 *buf, uint16 n)
+static uint le_pack_u16(u8 *buf, u16 n)
 {
   buf[0] = 0xff & n;
   buf[1] = 0xff & (n >> 8);
   return sizeof n;
 }
 
-static uint be_pack_uint16(uint8 *buf, uint16 n)
+static uint be_pack_u16(u8 *buf, u16 n)
 {
   buf[1] = 0xff & n;
   buf[0] = 0xff & (n >> 8);
@@ -59,13 +59,13 @@ static uint be_pack_uint16(uint8 *buf, uint16 n)
 }
 
 __attribute__ ((noreturn))
-static uint nat_pack_uint24(__attribute__ ((unused)) uint8 *buf,
-                            __attribute__ ((unused)) uint32 n)
+static uint nat_pack_u24(__attribute__ ((unused)) u8 *buf,
+                         __attribute__ ((unused)) u32 n)
 {
-  log_abort("bindata: native pack uint24");
+  log_abort("bindata: native pack u24");
 }
 
-static uint le_pack_uint24(uint8 *buf, uint32 n)
+static uint le_pack_u24(u8 *buf, u32 n)
 {
   buf[0] = 0xff & n;
   buf[1] = 0xff & (n >> 8);
@@ -73,7 +73,7 @@ static uint le_pack_uint24(uint8 *buf, uint32 n)
   return 3;
 }
 
-static uint be_pack_uint24(uint8 *buf, uint32 n)
+static uint be_pack_u24(u8 *buf, u32 n)
 {
   buf[2] = 0xff & n;
   buf[1] = 0xff & (n >> 8);
@@ -81,37 +81,13 @@ static uint be_pack_uint24(uint8 *buf, uint32 n)
   return 3;
 }
 
-static uint nat_pack_int32(uint8 *buf, int32 n)
+static uint nat_pack_i32(u8 *buf, i32 n)
 {
-  *(int32 *)buf = n;
+  *(i32 *)buf = n;
   return sizeof n;
 }
 
-static uint le_pack_int32(uint8 *buf, int32 n)
-{
-  buf[0] = 0xff & n;
-  buf[1] = 0xff & (n >> 8);
-  buf[2] = 0xff & (n >> 16);
-  buf[3] = 0xff & (n >> 24);
-  return sizeof n;
-}
-
-static uint be_pack_int32(uint8 *buf, int32 n)
-{
-  buf[3] = 0xff & n;
-  buf[2] = 0xff & (n >> 8);
-  buf[1] = 0xff & (n >> 16);
-  buf[0] = 0xff & (n >> 24);
-  return sizeof n;
-}
-
-static uint nat_pack_uint32(uint8 *buf, uint32 n)
-{
-  *(uint32 *)buf = n;
-  return sizeof n;
-}
-
-static uint le_pack_uint32(uint8 *buf, uint32 n)
+static uint le_pack_i32(u8 *buf, i32 n)
 {
   buf[0] = 0xff & n;
   buf[1] = 0xff & (n >> 8);
@@ -120,7 +96,7 @@ static uint le_pack_uint32(uint8 *buf, uint32 n)
   return sizeof n;
 }
 
-static uint be_pack_uint32(uint8 *buf, uint32 n)
+static uint be_pack_i32(u8 *buf, i32 n)
 {
   buf[3] = 0xff & n;
   buf[2] = 0xff & (n >> 8);
@@ -129,13 +105,37 @@ static uint be_pack_uint32(uint8 *buf, uint32 n)
   return sizeof n;
 }
 
-static uint nat_pack_int64(uint8 *buf, int64 n)
+static uint nat_pack_u32(u8 *buf, u32 n)
 {
-  *(int64 *)buf = n;
+  *(u32 *)buf = n;
   return sizeof n;
 }
 
-static uint le_pack_int64(uint8 *buf, int64 n)
+static uint le_pack_u32(u8 *buf, u32 n)
+{
+  buf[0] = 0xff & n;
+  buf[1] = 0xff & (n >> 8);
+  buf[2] = 0xff & (n >> 16);
+  buf[3] = 0xff & (n >> 24);
+  return sizeof n;
+}
+
+static uint be_pack_u32(u8 *buf, u32 n)
+{
+  buf[3] = 0xff & n;
+  buf[2] = 0xff & (n >> 8);
+  buf[1] = 0xff & (n >> 16);
+  buf[0] = 0xff & (n >> 24);
+  return sizeof n;
+}
+
+static uint nat_pack_i64(u8 *buf, i64 n)
+{
+  *(i64 *)buf = n;
+  return sizeof n;
+}
+
+static uint le_pack_i64(u8 *buf, i64 n)
 {
   buf[0] = 0xff & n;
   buf[1] = 0xff & (n >> 8);
@@ -148,7 +148,7 @@ static uint le_pack_int64(uint8 *buf, int64 n)
   return sizeof n;
 }
 
-static uint be_pack_int64(uint8 *buf, int64 n)
+static uint be_pack_i64(u8 *buf, i64 n)
 {
   buf[7] = 0xff & n;
   buf[6] = 0xff & (n >> 8);
@@ -161,13 +161,13 @@ static uint be_pack_int64(uint8 *buf, int64 n)
   return sizeof n;
 }
 
-static uint nat_pack_uint64(uint8 *buf, uint64 n)
+static uint nat_pack_u64(u8 *buf, u64 n)
 {
-  *(uint64 *)buf = n;
+  *(u64 *)buf = n;
   return sizeof n;
 }
 
-static uint le_pack_uint64(uint8 *buf, uint64 n)
+static uint le_pack_u64(u8 *buf, u64 n)
 {
   buf[0] = 0xff & n;
   buf[1] = 0xff & (n >> 8);
@@ -180,7 +180,7 @@ static uint le_pack_uint64(uint8 *buf, uint64 n)
   return sizeof n;
 }
 
-static uint be_pack_uint64(uint8 *buf, uint64 n)
+static uint be_pack_u64(u8 *buf, u64 n)
 {
   buf[7] = 0xff & n;
   buf[6] = 0xff & (n >> 8);
@@ -194,84 +194,84 @@ static uint be_pack_uint64(uint8 *buf, uint64 n)
 }
 
 struct pack_fns {
-  uint (*pack_int8)(uint8 *, int8);
-  uint (*pack_uint8)(uint8 *, uint8);
-  uint (*pack_int16)(uint8 *, int16);
-  uint (*pack_uint16)(uint8 *, uint16);
-  uint (*pack_uint24)(uint8 *, uint32);
-  uint (*pack_int32)(uint8 *, int32);
-  uint (*pack_uint32)(uint8 *, uint32);
-  uint (*pack_int64)(uint8 *, int64);
-  uint (*pack_uint64)(uint8 *, uint64);
+  uint (*pack_i8)(u8 *, i8);
+  uint (*pack_u8)(u8 *, u8);
+  uint (*pack_i16)(u8 *, i16);
+  uint (*pack_u16)(u8 *, u16);
+  uint (*pack_u24)(u8 *, u32);
+  uint (*pack_i32)(u8 *, i32);
+  uint (*pack_u32)(u8 *, u32);
+  uint (*pack_i64)(u8 *, i64);
+  uint (*pack_u64)(u8 *, u64);
 };
 
 static struct pack_fns nat_pack_fns = {
-  .pack_int8 = &pack_int8,
-  .pack_uint8 = &pack_uint8,
-  .pack_int16 = &nat_pack_int16,
-  .pack_uint16 = &nat_pack_uint16,
-  .pack_uint24 = &nat_pack_uint24,
-  .pack_int32 = &nat_pack_int32,
-  .pack_uint32 = &nat_pack_uint32,
-  .pack_int64 = &nat_pack_int64,
-  .pack_uint64 = &nat_pack_uint64
+  .pack_i8 = &pack_i8,
+  .pack_u8 = &pack_u8,
+  .pack_i16 = &nat_pack_i16,
+  .pack_u16 = &nat_pack_u16,
+  .pack_u24 = &nat_pack_u24,
+  .pack_i32 = &nat_pack_i32,
+  .pack_u32 = &nat_pack_u32,
+  .pack_i64 = &nat_pack_i64,
+  .pack_u64 = &nat_pack_u64
 };
 
 static struct pack_fns le_pack_fns = {
-  .pack_int8 = &pack_int8,
-  .pack_uint8 = &pack_uint8,
-  .pack_int16 = &le_pack_int16,
-  .pack_uint16 = &le_pack_uint16,
-  .pack_uint24 = &le_pack_uint24,
-  .pack_int32 = &le_pack_int32,
-  .pack_uint32 = &le_pack_uint32,
-  .pack_int64 = &le_pack_int64,
-  .pack_uint64 = &le_pack_uint64
+  .pack_i8 = &pack_i8,
+  .pack_u8 = &pack_u8,
+  .pack_i16 = &le_pack_i16,
+  .pack_u16 = &le_pack_u16,
+  .pack_u24 = &le_pack_u24,
+  .pack_i32 = &le_pack_i32,
+  .pack_u32 = &le_pack_u32,
+  .pack_i64 = &le_pack_i64,
+  .pack_u64 = &le_pack_u64
 };
 
 static struct pack_fns be_pack_fns = {
-  .pack_int8 = &pack_int8,
-  .pack_uint8 = &pack_uint8,
-  .pack_int16 = &be_pack_int16,
-  .pack_uint16 = &be_pack_uint16,
-  .pack_uint24 = &be_pack_uint24,
-  .pack_int32 = &be_pack_int32,
-  .pack_uint32 = &be_pack_uint32,
-  .pack_int64 = &be_pack_int64,
-  .pack_uint64 = &be_pack_uint64
+  .pack_i8 = &pack_i8,
+  .pack_u8 = &pack_u8,
+  .pack_i16 = &be_pack_i16,
+  .pack_u16 = &be_pack_u16,
+  .pack_u24 = &be_pack_u24,
+  .pack_i32 = &be_pack_i32,
+  .pack_u32 = &be_pack_u32,
+  .pack_i64 = &be_pack_i64,
+  .pack_u64 = &be_pack_u64
 };
 
-#define PACK_SWITCH                               \
-  do {                                            \
-    switch (inttype) {                            \
-      PACK_CASE('b', int8, int);                  \
-      PACK_CASE('B', uint8, unsigned);            \
-      PACK_CASE('h', int16, int);                 \
-      PACK_CASE('H', uint16, unsigned);           \
-      PACK_CASE('T', uint24, unsigned long);      \
-      PACK_CASE('l', int32, long);                \
-      PACK_CASE('L', uint32, unsigned long);      \
-      PACK_CASE('q', int64, long long);           \
-      PACK_CASE('Q', uint64, unsigned long long); \
-    default:                                      \
-      exit(1);                                    \
-    }                                             \
+#define PACK_SWITCH                             \
+  do {                                          \
+    switch (inttype) {                          \
+      PACK_CASE('b', i8, int);                  \
+      PACK_CASE('B', u8, unsigned);             \
+      PACK_CASE('h', i16, int);                 \
+      PACK_CASE('H', u16, unsigned);            \
+      PACK_CASE('T', u24, unsigned long);       \
+      PACK_CASE('l', i32, long);                \
+      PACK_CASE('L', u32, unsigned long);       \
+      PACK_CASE('q', i64, long long);           \
+      PACK_CASE('Q', u64, unsigned long long);  \
+    default:                                    \
+      exit(1);                                  \
+    }                                           \
   } while (0)
 
-#define PACK_CASE(c, ptype, atype)                        \
-  case c:                                                 \
-  for (i = 0, n = 0; i < count; i += 1) {                 \
-    n += fns->pack_##ptype(buf + n, va_arg(argp, atype)); \
-  }                                                       \
+#define PACK_CASE(c, ptype, atype)                                      \
+  case c:                                                               \
+  for (i = 0, n = 0; i < count; i += 1) {                               \
+                                         n += fns->pack_##ptype(buf + n, va_arg(argp, atype)); \
+                                         }                              \
   break;
 
-static uint pack_register(uint8 *buf, int inttype, uint64 count,
-                          struct pack_fns *fns, va_list argp)
-{
-  uint i, n;
-  PACK_SWITCH;
-  return n;
-}
+    static uint pack_register(u8 *buf, int inttype, u64 count,
+                              struct pack_fns *fns, va_list argp)
+    {
+      uint i, n;
+      PACK_SWITCH;
+      return n;
+    }
 
 #undef PACK_CASE
 
@@ -285,7 +285,7 @@ static uint pack_register(uint8 *buf, int inttype, uint64 count,
     break;                                      \
   }
 
-static uint pack_array(uint8 *buf, int inttype, uint64 len,
+static uint pack_array(u8 *buf, int inttype, u64 len,
                        struct pack_fns *fns, va_list argp)
 {
   uint i, n;
@@ -306,7 +306,7 @@ static uint pack_array(uint8 *buf, int inttype, uint64 len,
     break;                                      \
   }
 
-static uint pack_vector(uint8 *buf, int inttype, uint32 min, uint32 max,
+static uint pack_vector(u8 *buf, int inttype, u32 min, u32 max,
                         struct pack_fns *fns, va_list argp)
 {
   uint i, n;
@@ -317,12 +317,12 @@ static uint pack_vector(uint8 *buf, int inttype, uint32 min, uint32 max,
              "vector length %u, expected <%u..%u>",
              vec->len, min, max);
   /* TODO handle variable size vectors */
-  n = fns->pack_uint8(buf, vec->len);
+  n = fns->pack_u8(buf, vec->len);
   PACK_SWITCH;
   return n;
 }
 
-uint bindata_vpack(uint8 *buf, const char *fmt, va_list argp)
+uint bindata_vpack(u8 *buf, const char *fmt, va_list argp)
 {
   const struct bdprog *prog;
   struct bdcmd *cmd;
@@ -368,7 +368,7 @@ uint bindata_vpack(uint8 *buf, const char *fmt, va_list argp)
   return n;
 }
 
-uint bindata_pack(uint8 *buf, const char *fmt, ...)
+uint bindata_pack(u8 *buf, const char *fmt, ...)
 {
   uint n;
   va_list argp;
@@ -378,52 +378,52 @@ uint bindata_pack(uint8 *buf, const char *fmt, ...)
   return n;
 }
 
-static uint unpack_int8(const uint8 *buf, int8 *p)
+static uint unpack_i8(const u8 *buf, i8 *p)
 {
   *p = buf[0];
   return sizeof *p;
 }
 
-static uint unpack_uint8(const uint8 *buf, uint8 *p)
+static uint unpack_u8(const u8 *buf, u8 *p)
 {
   *p = buf[0];
   return sizeof *p;
 }
 
-static uint nat_unpack_int16(const uint8 *buf, int16 *p)
+static uint nat_unpack_i16(const u8 *buf, i16 *p)
 {
-  *p = *(int16 *)buf;
+  *p = *(i16 *)buf;
   return sizeof *p;
 }
 
-static uint le_unpack_int16(const uint8 *buf, int16 *p)
+static uint le_unpack_i16(const u8 *buf, i16 *p)
 {
   *p = ((buf[0]) |
         (buf[1] << 8));
   return sizeof *p;
 }
 
-static uint be_unpack_int16(const uint8 *buf, int16 *p)
+static uint be_unpack_i16(const u8 *buf, i16 *p)
 {
-  *p = (((int16) buf[1]) |
-        ((int16) buf[0] << 8));
+  *p = (((i16) buf[1]) |
+        ((i16) buf[0] << 8));
   return sizeof *p;
 }
 
-static uint nat_unpack_uint16(const uint8 *buf, uint16 *p)
+static uint nat_unpack_u16(const u8 *buf, u16 *p)
 {
-  *p = *(uint16 *)buf;
+  *p = *(u16 *)buf;
   return sizeof *p;
 }
 
-static uint le_unpack_uint16(const uint8 *buf, uint16 *p)
+static uint le_unpack_u16(const u8 *buf, u16 *p)
 {
   *p = ((buf[0]) |
         (buf[1] << 8));
   return sizeof *p;
 }
 
-static uint be_unpack_uint16(const uint8 *buf, uint16 *p)
+static uint be_unpack_u16(const u8 *buf, u16 *p)
 {
   *p = ((buf[1]) |
         (buf[0] << 8));
@@ -431,13 +431,13 @@ static uint be_unpack_uint16(const uint8 *buf, uint16 *p)
 }
 
 __attribute__ ((noreturn))
-static uint nat_unpack_uint24(__attribute__ ((unused)) const uint8 *buf,
-                              __attribute__ ((unused)) uint24 *p)
+static uint nat_unpack_u24(__attribute__ ((unused)) const u8 *buf,
+                           __attribute__ ((unused)) u24 *p)
 {
   log_abort("not implemented");
 }
 
-static uint le_unpack_uint24(const uint8 *buf, uint24 *p)
+static uint le_unpack_u24(const u8 *buf, u24 *p)
 {
   *p = ((buf[0]) |
         (buf[1] << 8) |
@@ -445,7 +445,7 @@ static uint le_unpack_uint24(const uint8 *buf, uint24 *p)
   return 3;
 }
 
-static uint be_unpack_uint24(const uint8 *buf, uint24 *p)
+static uint be_unpack_u24(const u8 *buf, u24 *p)
 {
   *p = ((buf[2]) |
         (buf[1] << 8) |
@@ -453,13 +453,13 @@ static uint be_unpack_uint24(const uint8 *buf, uint24 *p)
   return 3;
 }
 
-static uint nat_unpack_int32(const uint8 *buf, int32 *p)
+static uint nat_unpack_i32(const u8 *buf, i32 *p)
 {
-  *p = *(int32 *)buf;
+  *p = *(i32 *)buf;
   return sizeof *p;
 }
 
-static uint le_unpack_int32(const uint8 *buf, int32 *p)
+static uint le_unpack_i32(const u8 *buf, i32 *p)
 {
   *p = (((long) buf[0]) |
         ((long) buf[1] << 8) |
@@ -468,7 +468,7 @@ static uint le_unpack_int32(const uint8 *buf, int32 *p)
   return sizeof *p;
 }
 
-static uint be_unpack_int32(const uint8 *buf, int32 *p)
+static uint be_unpack_i32(const u8 *buf, i32 *p)
 {
   *p = (((long) buf[3]) |
         ((long) buf[2] << 8) |
@@ -477,13 +477,13 @@ static uint be_unpack_int32(const uint8 *buf, int32 *p)
   return sizeof *p;
 }
 
-static uint nat_unpack_uint32(const uint8 *buf, uint32 *p)
+static uint nat_unpack_u32(const u8 *buf, u32 *p)
 {
-  *p = *(uint32 *)buf;
+  *p = *(u32 *)buf;
   return sizeof *p;
 }
 
-static uint le_unpack_uint32(const uint8 *buf, uint32 *p)
+static uint le_unpack_u32(const u8 *buf, u32 *p)
 {
   *p = (((unsigned long) buf[0]) |
         ((unsigned long) buf[1] << 8) |
@@ -492,7 +492,7 @@ static uint le_unpack_uint32(const uint8 *buf, uint32 *p)
   return sizeof *p;
 }
 
-static uint be_unpack_uint32(const uint8 *buf, uint32 *p)
+static uint be_unpack_u32(const u8 *buf, u32 *p)
 {
   *p = (((unsigned long) buf[3]) |
         ((unsigned long) buf[2] << 8) |
@@ -501,13 +501,13 @@ static uint be_unpack_uint32(const uint8 *buf, uint32 *p)
   return sizeof *p;
 }
 
-static uint nat_unpack_int64(const uint8 *buf, int64 *p)
+static uint nat_unpack_i64(const u8 *buf, i64 *p)
 {
-  *p = *(int64 *)buf;
+  *p = *(i64 *)buf;
   return sizeof *p;
 }
 
-static uint le_unpack_int64(const uint8 *buf, int64 *p)
+static uint le_unpack_i64(const u8 *buf, i64 *p)
 {
   *p = (((long long) buf[0]) |
         ((long long) buf[1] << 8) |
@@ -520,7 +520,7 @@ static uint le_unpack_int64(const uint8 *buf, int64 *p)
   return sizeof *p;
 }
 
-static uint be_unpack_int64(const uint8 *buf, int64 *p)
+static uint be_unpack_i64(const u8 *buf, i64 *p)
 {
   *p = (((long long) buf[7]) |
         ((long long) buf[6] << 8) |
@@ -533,13 +533,13 @@ static uint be_unpack_int64(const uint8 *buf, int64 *p)
   return sizeof *p;
 }
 
-static uint nat_unpack_uint64(const uint8 *buf, uint64 *p)
+static uint nat_unpack_u64(const u8 *buf, u64 *p)
 {
-  *p = *(uint64 *)buf;
+  *p = *(u64 *)buf;
   return sizeof *p;
 }
 
-static uint le_unpack_uint64(const uint8 *buf, uint64 *p)
+static uint le_unpack_u64(const u8 *buf, u64 *p)
 {
   *p = (((unsigned long long) buf[0]) |
         ((unsigned long long) buf[1] << 8) |
@@ -552,7 +552,7 @@ static uint le_unpack_uint64(const uint8 *buf, uint64 *p)
   return sizeof *p;
 }
 
-static uint be_unpack_uint64(const uint8 *buf, uint64 *p)
+static uint be_unpack_u64(const u8 *buf, u64 *p)
 {
   *p = (((unsigned long long) buf[7]) |
         ((unsigned long long) buf[6] << 8) |
@@ -566,84 +566,84 @@ static uint be_unpack_uint64(const uint8 *buf, uint64 *p)
 }
 
 struct unpack_fns {
-  uint (*unpack_int8)(const uint8 *, int8 *);
-  uint (*unpack_uint8)(const uint8 *, uint8 *);
-  uint (*unpack_int16)(const uint8 *, int16 *);
-  uint (*unpack_uint16)(const uint8 *, uint16 *);
-  uint (*unpack_uint24)(const uint8 *, uint24 *);
-  uint (*unpack_int32)(const uint8 *, int32 *);
-  uint (*unpack_uint32)(const uint8 *, uint32 *);
-  uint (*unpack_int64)(const uint8 *, int64 *);
-  uint (*unpack_uint64)(const uint8 *, uint64 *);
+  uint (*unpack_i8)(const u8 *, i8 *);
+  uint (*unpack_u8)(const u8 *, u8 *);
+  uint (*unpack_i16)(const u8 *, i16 *);
+  uint (*unpack_u16)(const u8 *, u16 *);
+  uint (*unpack_u24)(const u8 *, u24 *);
+  uint (*unpack_i32)(const u8 *, i32 *);
+  uint (*unpack_u32)(const u8 *, u32 *);
+  uint (*unpack_i64)(const u8 *, i64 *);
+  uint (*unpack_u64)(const u8 *, u64 *);
 };
 
 static struct unpack_fns nat_unpack_fns = {
-  .unpack_int8 = unpack_int8,
-  .unpack_uint8 = unpack_uint8,
-  .unpack_int16 = nat_unpack_int16,
-  .unpack_uint16 = nat_unpack_uint16,
-  .unpack_uint24 = nat_unpack_uint24,
-  .unpack_int32 = nat_unpack_int32,
-  .unpack_uint32 = nat_unpack_uint32,
-  .unpack_int64 = nat_unpack_int64,
-  .unpack_uint64 = nat_unpack_uint64
+  .unpack_i8 = unpack_i8,
+  .unpack_u8 = unpack_u8,
+  .unpack_i16 = nat_unpack_i16,
+  .unpack_u16 = nat_unpack_u16,
+  .unpack_u24 = nat_unpack_u24,
+  .unpack_i32 = nat_unpack_i32,
+  .unpack_u32 = nat_unpack_u32,
+  .unpack_i64 = nat_unpack_i64,
+  .unpack_u64 = nat_unpack_u64
 };
 
 static struct unpack_fns le_unpack_fns = {
-  .unpack_int8 = unpack_int8,
-  .unpack_uint8 = unpack_uint8,
-  .unpack_int16 = le_unpack_int16,
-  .unpack_uint16 = le_unpack_uint16,
-  .unpack_uint24 = le_unpack_uint24,
-  .unpack_int32 = le_unpack_int32,
-  .unpack_uint32 = le_unpack_uint32,
-  .unpack_int64 = le_unpack_int64,
-  .unpack_uint64 = le_unpack_uint64
+  .unpack_i8 = unpack_i8,
+  .unpack_u8 = unpack_u8,
+  .unpack_i16 = le_unpack_i16,
+  .unpack_u16 = le_unpack_u16,
+  .unpack_u24 = le_unpack_u24,
+  .unpack_i32 = le_unpack_i32,
+  .unpack_u32 = le_unpack_u32,
+  .unpack_i64 = le_unpack_i64,
+  .unpack_u64 = le_unpack_u64
 };
 
 static struct unpack_fns be_unpack_fns = {
-  .unpack_int8 = unpack_int8,
-  .unpack_uint8 = unpack_uint8,
-  .unpack_int16 = be_unpack_int16,
-  .unpack_uint16 = be_unpack_uint16,
-  .unpack_uint24 = be_unpack_uint24,
-  .unpack_int32 = be_unpack_int32,
-  .unpack_uint32 = be_unpack_uint32,
-  .unpack_int64 = be_unpack_int64,
-  .unpack_uint64 = be_unpack_uint64
+  .unpack_i8 = unpack_i8,
+  .unpack_u8 = unpack_u8,
+  .unpack_i16 = be_unpack_i16,
+  .unpack_u16 = be_unpack_u16,
+  .unpack_u24 = be_unpack_u24,
+  .unpack_i32 = be_unpack_i32,
+  .unpack_u32 = be_unpack_u32,
+  .unpack_i64 = be_unpack_i64,
+  .unpack_u64 = be_unpack_u64
 };
 
-#define UNPACK_SWITCH                             \
-  do {                                            \
-    switch (inttype) {                            \
-      UNPACK_CASE('b', int8);                     \
-      UNPACK_CASE('B', uint8);                    \
-      UNPACK_CASE('h', int16);                    \
-      UNPACK_CASE('H', uint16);                   \
-      UNPACK_CASE('T', uint24);                   \
-      UNPACK_CASE('l', int32);                    \
-      UNPACK_CASE('L', uint32);                   \
-      UNPACK_CASE('q', int64);                    \
-      UNPACK_CASE('Q', uint64);                   \
-    default:                                      \
-      exit(1);                                    \
-    }                                             \
+#define UNPACK_SWITCH                           \
+  do {                                          \
+    switch (inttype) {                          \
+      UNPACK_CASE('b', i8);                     \
+      UNPACK_CASE('B', u8);                     \
+      UNPACK_CASE('h', i16);                    \
+      UNPACK_CASE('H', u16);                    \
+      UNPACK_CASE('T', u24);                    \
+      UNPACK_CASE('l', i32);                    \
+      UNPACK_CASE('L', u32);                    \
+      UNPACK_CASE('q', i64);                    \
+      UNPACK_CASE('Q', u64);                    \
+    default:                                    \
+      exit(1);                                  \
+    }                                           \
   } while (0)
 
-#define UNPACK_CASE(c, type)                                \
-  case c:                                                   \
-  for (i = 0, n = 0; i < count; i += 1) {                   \
-    n += fns->unpack_##type(buf + n, va_arg(argp, type *)); \
-  }                                                         \
+#define UNPACK_CASE(c, type)                                            \
+  case c:                                                               \
+  for (i = 0, n = 0; i < count; i += 1) {                               \
+                                         n += fns->unpack_##type(buf + n, va_arg(argp, type *)); \
+                                         }                              \
   break;
 
-static uint unpack_register(const uint8 *buf, int inttype, uint64 count,
-                            struct unpack_fns *fns, va_list argp)
-{
-  uint i, n;
-  UNPACK_SWITCH;
-  return n;
-}
+    static uint unpack_register(const u8 *buf, int inttype, u64 count,
+                                struct unpack_fns *fns, va_list argp)
+    {
+      uint i, n;
+      UNPACK_SWITCH;
+      return n;
+    }
 
 #undef UNPACK_CASE
 
@@ -657,7 +657,7 @@ static uint unpack_register(const uint8 *buf, int inttype, uint64 count,
     break;                                      \
   }
 
-static uint unpack_array(const uint8 *buf, int inttype, uint64 len,
+static uint unpack_array(const u8 *buf, int inttype, u64 len,
                          struct unpack_fns *fns, va_list argp)
 {
   uint i, n;
@@ -678,7 +678,7 @@ static uint unpack_array(const uint8 *buf, int inttype, uint64 len,
     break;                                      \
   }
 
-static uint unpack_vector(const uint8 *buf, int inttype, uint32 min, uint32 max,
+static uint unpack_vector(const u8 *buf, int inttype, u32 min, u32 max,
                           struct unpack_fns *fns, va_list argp)
 {
   uint i, n;
@@ -690,12 +690,12 @@ static uint unpack_vector(const uint8 *buf, int inttype, uint32 min, uint32 max,
              vec->len, min, max);
   /* TODO handle variable size vectors */
   vec->len = 0;
-  n = fns->unpack_uint8(buf, (uint8 *)&vec->len);
+  n = fns->unpack_u8(buf, (u8 *)&vec->len);
   UNPACK_SWITCH;
   return n;
 }
 
-uint bindata_vunpack(const uint8 *buf, const char *fmt, va_list argp)
+uint bindata_vunpack(const u8 *buf, const char *fmt, va_list argp)
 {
   const struct bdprog *prog;
   struct bdcmd *cmd;
@@ -741,7 +741,7 @@ uint bindata_vunpack(const uint8 *buf, const char *fmt, va_list argp)
   return n;
 }
 
-uint bindata_unpack(const uint8 *buf, const char *fmt, ...)
+uint bindata_unpack(const u8 *buf, const char *fmt, ...)
 {
   uint n;
   va_list argp;

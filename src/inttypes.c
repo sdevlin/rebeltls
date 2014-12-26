@@ -1,25 +1,25 @@
 #include "inttypes.h"
 
-uint24 uint24_clamp(uint24 x)
+u24 u24_clamp(u24 x)
 {
   return x & 0xffffff;
 }
 
-void uint128_zero(uint128 *x)
+void u128_zero(u128 *x)
 {
   x->hi = 0;
   x->lo = 0;
 }
 
-void uint128_xor(uint128 *x, const uint128 *y, const uint128 *z)
+void u128_xor(u128 *x, const u128 *y, const u128 *z)
 {
   x->hi = y->hi ^ z->hi;
   x->lo = y->lo ^ z->lo;
 }
 
-uint uint128_bit(uint128 *x, uint k)
+uint u128_bit(u128 *x, uint k)
 {
-  uint64 w;
+  u64 w;
 
   w = k < 64 ? x->lo : x->hi;
   k %= 64;

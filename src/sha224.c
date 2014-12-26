@@ -7,7 +7,7 @@
 #include "sha256.h"
 #include "inttypes.h"
 
-const uint32 sha224_initstate[] = {
+const u32 sha224_initstate[] = {
   0xc1059ed8, 0x367cd507, 0x3070dd17, 0xf70e5939,
   0xffc00b31, 0x68581511, 0x64f98fa7, 0xbefa4fa4
 };
@@ -22,7 +22,7 @@ static void packmlen(sha224_ctx *ctx)
   bindata_pack(ctx->buf + 56, "> Q", ctx->mlen << 3);
 }
 
-static void packh(sha224_ctx *ctx, uint8 *h)
+static void packh(sha224_ctx *ctx, u8 *h)
 {
   bindata_pack(h, "> L[7]", ctx->h);
 }

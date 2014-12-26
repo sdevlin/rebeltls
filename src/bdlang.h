@@ -19,10 +19,10 @@ struct bdcmd {
   int cmdtype;
   int inttype;
   union {
-    uint64 val;
+    u64 val;
     struct {
-      uint32 max;
-      uint32 min;
+      u32 max;
+      u32 min;
     } rng;
   } coef;
 };

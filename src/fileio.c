@@ -2,7 +2,7 @@
 
 #include "io.h"
 
-static int fileio_tryread(io_src *src, uint8 *buf, uint buflen)
+static int fileio_tryread(io_src *src, u8 *buf, uint buflen)
 {
   int fd;
 
@@ -10,7 +10,7 @@ static int fileio_tryread(io_src *src, uint8 *buf, uint buflen)
   return read(fd, buf, buflen);
 }
 
-static int fileio_trywrite(io_src *src, const uint8 *buf, uint buflen)
+static int fileio_trywrite(io_src *src, const u8 *buf, uint buflen)
 {
   int fd;
 
@@ -18,12 +18,12 @@ static int fileio_trywrite(io_src *src, const uint8 *buf, uint buflen)
   return write(fd, buf, buflen);
 }
 
-static int fileio_read(io_src *src, uint8 *buf, uint buflen)
+static int fileio_read(io_src *src, u8 *buf, uint buflen)
 {
   return fileio_tryread(src, buf, buflen);
 }
 
-static int fileio_write(io_src *src, const uint8 *buf, uint buflen)
+static int fileio_write(io_src *src, const u8 *buf, uint buflen)
 {
   return fileio_trywrite(src, buf, buflen);
 }

@@ -10,15 +10,15 @@ enum {
 
 typedef struct {
   int dir;
-  uint32 w[44];
+  u32 w[44];
 } aes128_ctx;
 
-void aes128_init(aes128_ctx *ctx, const uint8 *key, int dir);
-aes128_ctx *aes128_new(const uint8 *key, int dir);
+void aes128_init(aes128_ctx *ctx, const u8 *key, int dir);
+aes128_ctx *aes128_new(const u8 *key, int dir);
 
-void aes128_permute(const aes128_ctx *ctx, const uint8 *in, uint8 *out);
+void aes128_permute(const aes128_ctx *ctx, const u8 *in, u8 *out);
 
-void aes128_encrypt(const uint8 *key, const uint8 *p, uint8 *c);
-void aes128_decrypt(const uint8 *key, const uint8 *c, uint8 *p);
+void aes128_encrypt(const u8 *key, const u8 *p, u8 *c);
+void aes128_decrypt(const u8 *key, const u8 *c, u8 *p);
 
 #endif

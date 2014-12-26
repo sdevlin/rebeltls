@@ -7,9 +7,9 @@ static uint min(uint a, uint b)
   return a < b ? a : b;
 }
 
-static int bufio_tryread(io_src *src, uint8 *buf, uint buflen)
+static int bufio_tryread(io_src *src, u8 *buf, uint buflen)
 {
-  uint8 *srcbuf;
+  u8 *srcbuf;
   uint srclen;
   uint n;
 
@@ -21,9 +21,9 @@ static int bufio_tryread(io_src *src, uint8 *buf, uint buflen)
   return n;
 }
 
-static int bufio_trywrite(io_src *src, const uint8 *buf, uint buflen)
+static int bufio_trywrite(io_src *src, const u8 *buf, uint buflen)
 {
-  uint8 *srcbuf;
+  u8 *srcbuf;
   uint srclen;
   uint n;
 
@@ -35,12 +35,12 @@ static int bufio_trywrite(io_src *src, const uint8 *buf, uint buflen)
   return n;
 }
 
-static int bufio_read(io_src *src, uint8 *buf, uint buflen)
+static int bufio_read(io_src *src, u8 *buf, uint buflen)
 {
   return bufio_tryread(src, buf, buflen);
 }
 
-static int bufio_write(io_src *src, const uint8 *buf, uint buflen)
+static int bufio_write(io_src *src, const u8 *buf, uint buflen)
 {
   return bufio_trywrite(src, buf, buflen);
 }

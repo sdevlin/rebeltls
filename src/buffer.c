@@ -5,7 +5,7 @@
 #include "log.h"
 #include "inttypes.h"
 
-void buffer_init(buffer *b, uint8 *buf, uint len)
+void buffer_init(buffer *b, u8 *buf, uint len)
 {
   b->buf = buf;
   b->len = 0;
@@ -16,7 +16,7 @@ void buffer_init(buffer *b, uint8 *buf, uint len)
 
 void buffer_alloc(buffer *b, uint len)
 {
-  uint8 *buf;
+  u8 *buf;
 
   buf = malloc(len);
   buffer_init(b, buf, len);
@@ -41,7 +41,7 @@ uint buffer_writeavail(buffer *b)
   return b->cap - b->len;
 }
 
-void buffer_peek(buffer *b, uint8 *buf, uint len)
+void buffer_peek(buffer *b, u8 *buf, uint len)
 {
   uint endlen;
 
@@ -56,7 +56,7 @@ void buffer_peek(buffer *b, uint8 *buf, uint len)
   }
 }
 
-void buffer_read(buffer *b, uint8 *buf, uint len)
+void buffer_read(buffer *b, u8 *buf, uint len)
 {
   buffer_peek(b, buf, len);
   b->len -= len;
@@ -64,7 +64,7 @@ void buffer_read(buffer *b, uint8 *buf, uint len)
   b->rdpos %= b->cap;
 }
 
-void buffer_write(buffer *b, const uint8 *buf, uint len)
+void buffer_write(buffer *b, const u8 *buf, uint len)
 {
   uint endlen;
 

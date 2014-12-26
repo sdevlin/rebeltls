@@ -6,16 +6,16 @@
 
 /* TODO this could all use a little work i think */
 
-#define log_info(fmt, ...)                                              \
-  fprintf(stderr, "INFO %s:%d (%s) " fmt "\n",                          \
+#define log_info(fmt, ...)                              \
+  fprintf(stderr, "INFO %s:%d (%s) " fmt "\n",          \
           __FILE__, __LINE__, __func__, ##__VA_ARGS__)
 
-#define log_warn(fmt, ...)                                              \
-  fprintf(stderr, "WARN %s:%d (%s) " fmt "\n",                          \
+#define log_warn(fmt, ...)                              \
+  fprintf(stderr, "WARN %s:%d (%s) " fmt "\n",          \
           __FILE__, __LINE__, __func__, ##__VA_ARGS__)
 
-#define log_error(fmt, ...)                                             \
-  fprintf(stderr, "ERROR %s:%d (%s) " fmt "\n",                         \
+#define log_error(fmt, ...)                             \
+  fprintf(stderr, "ERROR %s:%d (%s) " fmt "\n",         \
           __FILE__, __LINE__, __func__, ##__VA_ARGS__)
 
 #define log_assert(expr, fmt, ...)              \

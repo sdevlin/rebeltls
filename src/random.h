@@ -3,6 +3,6 @@
 
 #include "inttypes.h"
 
-extern void random_bytes(uint8 *buf, uint buflen);
+extern void random_bytes(u8 *buf, uint buflen);
 
 #endif

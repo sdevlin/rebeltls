@@ -7,14 +7,14 @@
 #include "sha512.h"
 #include "inttypes.h"
 
-const uint64 sha512_initstate[] = {
+const u64 sha512_initstate[] = {
   0x6a09e667f3bcc908, 0xbb67ae8584caa73b,
   0x3c6ef372fe94f82b, 0xa54ff53a5f1d36f1,
   0x510e527fade682d1, 0x9b05688c2b3e6c1f,
   0x1f83d9abfb41bd6b, 0x5be0cd19137e2179
 };
 
-static const uint64 K[] = {
+static const u64 K[] = {
   0x428a2f98d728ae22, 0x7137449123ef65cd,
   0xb5c0fbcfec4d3b2f, 0xe9b5dba58189dbbc,
   0x3956c25bf348b538, 0x59f111f1b605d019,
@@ -57,39 +57,39 @@ static const uint64 K[] = {
   0x5fcb6fab3ad6faec, 0x6c44198c4a475817
 };
 
-static uint64 rotr(uint64 x, uint n)
+static u64 rotr(u64 x, uint n)
 {
   assert(n > 0);
   assert(n < 64);
   return (x >> n) | (x << (64-n));
 }
 
-static uint64 ch(uint64 x, uint64 y, uint64 z)
+static u64 ch(u64 x, u64 y, u64 z)
 {
   return (x & y) ^ (~x & z);
 }
 
-static uint64 maj(uint64 x, uint64 y, uint64 z)
+static u64 maj(u64 x, u64 y, u64 z)
 {
   return (x & y) ^ (x & z) ^ (y & z);
 }
 
-static uint64 S0(uint64 x)
+static u64 S0(u64 x)
 {
   return rotr(x, 28) ^ rotr(x, 34) ^ rotr(x, 39);
 }
 
-static uint64 S1(uint64 x)
+static u64 S1(u64 x)
 {
   return rotr(x, 14) ^ rotr(x, 18) ^ rotr(x, 41);
 }
 
-static uint64 s0(uint64 x)
+static u64 s0(u64 x)
 {
   return rotr(x, 1) ^ rotr(x, 8) ^ (x >> 7);
 }
 
-static uint64 s1(uint64 x)
+static u64 s1(u64 x)
 {
   return rotr(x, 19) ^ rotr(x, 61) ^ (x >> 6);
 }
@@ -97,8 +97,8 @@ static uint64 s1(uint64 x)
 void sha512_compress(sha512_ctx *ctx)
 {
   int i;
-  uint64 W[80];
-  uint64 a, b, c, d, e, f, g, h;
+  u64 W[80];
+  u64 a, b, c, d, e, f, g, h;
 
   bindata_unpack(ctx->buf, "> QQQQ QQQQ QQQQ QQQQ",
                  &W[0x0], &W[0x1], &W[0x2], &W[0x3],
@@ -120,7 +120,7 @@ void sha512_compress(sha512_ctx *ctx)
   h = ctx->h[7];
 
   for (i = 0; i < 80; i += 1) {
-    uint64 T1, T2;
+    u64 T1, T2;
 
     T1 = h + S1(e) + ch(e, f, g) + K[i] + W[i];
     T2 = S0(a) + maj(a, b, c);
@@ -149,7 +149,7 @@ static void packmlen(sha512_ctx *ctx)
   bindata_pack(ctx->buf + 112, "> QQ", 0, ctx->mlen << 3);
 }
 
-static void packh(sha512_ctx *ctx, uint8 *h)
+static void packh(sha512_ctx *ctx, u8 *h)
 {
   bindata_pack(h, "> Q[8]", ctx->h);
 }

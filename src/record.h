@@ -14,19 +14,19 @@ enum {
 };
 
 struct record {
-  uint8 content_type;
+  u8 content_type;
   struct {
-    uint8 major;
-    uint8 minor;
+    u8 major;
+    u8 minor;
   } protocol_version;
-  uint16 length;
-  uint8 fragment[RECORD_MAX_LEN];
+  u16 length;
+  u8 fragment[RECORD_MAX_LEN];
 };
 
 extern void record_init(struct record *rec,
-                        uint8 content_type,
-                        uint8 *fragment,
-                        uint16 length);
+                        u8 content_type,
+                        u8 *fragment,
+                        u16 length);
 
 extern int record_read(io *io, struct record *rec);
 extern void record_write(io *io, const struct record *rec);

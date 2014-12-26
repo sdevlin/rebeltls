@@ -7,12 +7,12 @@
 #include "sha256.h"
 #include "inttypes.h"
 
-const uint32 sha256_initstate[] = {
+const u32 sha256_initstate[] = {
   0x6a09e667, 0xbb67ae85, 0x3c6ef372, 0xa54ff53a,
   0x510e527f, 0x9b05688c, 0x1f83d9ab, 0x5be0cd19
 };
 
-static const uint32 K[] = {
+static const u32 K[] = {
   0x428a2f98, 0x71374491, 0xb5c0fbcf, 0xe9b5dba5,
   0x3956c25b, 0x59f111f1, 0x923f82a4, 0xab1c5ed5,
   0xd807aa98, 0x12835b01, 0x243185be, 0x550c7dc3,
@@ -31,39 +31,39 @@ static const uint32 K[] = {
   0x90befffa, 0xa4506ceb, 0xbef9a3f7, 0xc67178f2
 };
 
-static uint32 rotr(uint32 x, uint n)
+static u32 rotr(u32 x, uint n)
 {
   assert(n > 0);
   assert(n < 32);
   return (x >> n) | (x << (32-n));
 }
 
-static uint32 ch(uint32 x, uint32 y, uint32 z)
+static u32 ch(u32 x, u32 y, u32 z)
 {
   return (x & y) ^ (~x & z);
 }
 
-static uint32 maj(uint32 x, uint32 y, uint32 z)
+static u32 maj(u32 x, u32 y, u32 z)
 {
   return (x & y) ^ (x & z) ^ (y & z);
 }
 
-static uint32 S0(uint32 x)
+static u32 S0(u32 x)
 {
   return rotr(x, 2) ^ rotr(x, 13) ^ rotr(x, 22);
 }
 
-static uint32 S1(uint32 x)
+static u32 S1(u32 x)
 {
   return rotr(x, 6) ^ rotr(x, 11) ^ rotr(x, 25);
 }
 
-static uint32 s0(uint32 x)
+static u32 s0(u32 x)
 {
   return rotr(x, 7) ^ rotr(x, 18) ^ (x >> 3);
 }
 
-static uint32 s1(uint32 x)
+static u32 s1(u32 x)
 {
   return rotr(x, 17) ^ rotr(x, 19) ^ (x >> 10);
 }
@@ -71,8 +71,8 @@ static uint32 s1(uint32 x)
 void sha256_compress(sha256_ctx *ctx)
 {
   int i;
-  uint32 w[64];
-  uint32 a, b, c, d, e, f, g, h;
+  u32 w[64];
+  u32 a, b, c, d, e, f, g, h;
 
   bindata_unpack(ctx->buf, "> LLLL LLLL LLLL LLLL",
                  &w[0x0], &w[0x1], &w[0x2], &w[0x3],
@@ -94,7 +94,7 @@ void sha256_compress(sha256_ctx *ctx)
   h = ctx->h[7];
 
   for (i = 0; i < 64; i += 1) {
-    uint32 T1, T2;
+    u32 T1, T2;
 
     T1 = h + S1(e) + ch(e, f, g) + K[i] + w[i];
     T2 = S0(a) + maj(a, b, c);
@@ -123,7 +123,7 @@ static void packmlen(sha256_ctx *ctx)
   bindata_pack(ctx->buf + 56, "> Q", ctx->mlen << 3);
 }
 
-static void packh(sha256_ctx *ctx, uint8 *h)
+static void packh(sha256_ctx *ctx, u8 *h)
 {
   bindata_pack(h, "> L[8]", ctx->h);
 }

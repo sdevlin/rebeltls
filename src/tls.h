@@ -35,7 +35,7 @@ enum {
 };
 
 typedef struct {
-  uint8 conn_end;
+  u8 conn_end;
 } tls_ctx;
 
 #endif

@@ -8,7 +8,7 @@
 #include "aes128.h"
 
 /* the layout of this combined table assumes little-endianness */
-static const uint8 enc_T[] = {
+static const u8 enc_T[] = {
   0xa5, 0x63, 0x63, 0xc6, 0xa5, 0x63, 0x63, 0x00,
   0x84, 0x7c, 0x7c, 0xf8, 0x84, 0x7c, 0x7c, 0x00,
   0x99, 0x77, 0x77, 0xee, 0x99, 0x77, 0x77, 0x00,
@@ -267,46 +267,46 @@ static const uint8 enc_T[] = {
   0x3a, 0x16, 0x16, 0x2c, 0x3a, 0x16, 0x16, 0x00
 };
 
-static uint32 enc_T0(uint8 b)
+static u32 enc_T0(u8 b)
 {
-  const uint32 *T = (const uint32 *)enc_T;
+  const u32 *T = (const u32 *)enc_T;
   return T[b << 1];
 }
 
-static uint32 enc_T1(uint8 b)
+static u32 enc_T1(u8 b)
 {
-  const uint32 *T = (const uint32 *)(enc_T + 1);
+  const u32 *T = (const u32 *)(enc_T + 1);
   return T[b << 1];
 }
 
-static uint32 enc_T2(uint8 b)
+static u32 enc_T2(u8 b)
 {
-  const uint32 *T = (const uint32 *)(enc_T + 2);
+  const u32 *T = (const u32 *)(enc_T + 2);
   return T[b << 1];
 }
 
-static uint32 enc_T3(uint8 b)
+static u32 enc_T3(u8 b)
 {
-  const uint32 *T = (const uint32 *)(enc_T + 3);
+  const u32 *T = (const u32 *)(enc_T + 3);
   return T[b << 1];
 }
 
-static uint8 S(uint8 b)
+static u8 S(u8 b)
 {
-  const uint8 *S = enc_T + 1;
+  const u8 *S = enc_T + 1;
   return S[b << 3];
 }
 
-static uint32 Rcon[] = {
+static u32 Rcon[] = {
   0x00000000,                   /* unused */
   0x01000000, 0x02000000, 0x04000000, 0x08000000, 0x10000000,
   0x20000000, 0x40000000, 0x80000000, 0x1b000000, 0x36000000
 };
 
-void aes128_init(aes128_ctx *ctx, const uint8 *key, int dir)
+void aes128_init(aes128_ctx *ctx, const u8 *key, int dir)
 {
   int i;
-  uint32 *w;
+  u32 *w;
 
   log_assert(dir == DIR_ENCRYPT || dir == DIR_DECRYPT, "bad dir %d", dir);
   ctx->dir = dir;
@@ -315,7 +315,7 @@ void aes128_init(aes128_ctx *ctx, const uint8 *key, int dir)
   bindata_unpack(key, "> L[4]", w);
 
   for (i = 4; i < 44; i += 1) {
-    uint32 tmp = w[i-1];
+    u32 tmp = w[i-1];
     if ((i % 4) == 0) {
       tmp = ((S(tmp >> 16) << 24) ^
              (S(tmp >>  8) << 16) ^
@@ -331,7 +331,7 @@ void aes128_init(aes128_ctx *ctx, const uint8 *key, int dir)
   }
 }
 
-aes128_ctx *aes128_new(const uint8 *key, int dir)
+aes128_ctx *aes128_new(const u8 *key, int dir)
 {
   aes128_ctx *ctx;
 
@@ -340,7 +340,7 @@ aes128_ctx *aes128_new(const uint8 *key, int dir)
   return ctx;
 }
 
-static uint32 enc_roundstep(uint32 a, uint32 b, uint32 c, uint32 d, uint32 k)
+static u32 enc_roundstep(u32 a, u32 b, u32 c, u32 d, u32 k)
 {
   return (enc_T0(a >> 24) ^
           enc_T1(b >> 16) ^
@@ -356,8 +356,8 @@ static uint32 enc_roundstep(uint32 a, uint32 b, uint32 c, uint32 d, uint32 k)
     e[3] = enc_roundstep(a[3], a[0], a[1], a[2], *w++); \
   } while (0)
 
-static uint32 enc_finalroundstep(uint32 a, uint32 b, uint32 c, uint32 d,
-                                 uint32 k)
+static u32 enc_finalroundstep(u32 a, u32 b, u32 c, u32 d,
+                              u32 k)
 {
   return ((S(a >> 24) << 24) ^
           (S(b >> 16) << 16) ^
@@ -366,11 +366,11 @@ static uint32 enc_finalroundstep(uint32 a, uint32 b, uint32 c, uint32 d,
           k);
 }
 
-static void encrypt(const aes128_ctx *ctx, const uint8 *p, uint8 *c)
+static void encrypt(const aes128_ctx *ctx, const u8 *p, u8 *c)
 {
-  const uint32 *w;
-  uint32 m[4];
-  uint32 n[4];
+  const u32 *w;
+  u32 m[4];
+  u32 n[4];
 
   w = ctx->w;
   bindata_unpack(p, "> L[4]", m);
@@ -400,10 +400,10 @@ static void encrypt(const aes128_ctx *ctx, const uint8 *p, uint8 *c)
 }
 
 /* TODO doesn't work currently */
-static void decrypt(const aes128_ctx *ctx, const uint8 *c, uint8 *p)
+static void decrypt(const aes128_ctx *ctx, const u8 *c, u8 *p)
 {
-  const uint32 *w;
-  uint32 m[4];
+  const u32 *w;
+  u32 m[4];
 
   w = ctx->w;
   bindata_unpack(c, "> L[4]", m);
@@ -411,7 +411,7 @@ static void decrypt(const aes128_ctx *ctx, const uint8 *c, uint8 *p)
   bindata_pack(p, "> L[4]", m);
 }
 
-void aes128_permute(const aes128_ctx *ctx, const uint8 *in, uint8 *out)
+void aes128_permute(const aes128_ctx *ctx, const u8 *in, u8 *out)
 {
   switch (ctx->dir) {
   case DIR_ENCRYPT:
@@ -426,7 +426,7 @@ void aes128_permute(const aes128_ctx *ctx, const uint8 *in, uint8 *out)
   }
 }
 
-void aes128_encrypt(const uint8 *key, const uint8 *p, uint8 *c)
+void aes128_encrypt(const u8 *key, const u8 *p, u8 *c)
 {
   aes128_ctx ctx;
 
@@ -434,7 +434,7 @@ void aes128_encrypt(const uint8 *key, const uint8 *p, uint8 *c)
   aes128_permute(&ctx, p, c);
 }
 
-void aes128_decrypt(const uint8 *key, const uint8 *c, uint8 *p)
+void aes128_decrypt(const u8 *key, const u8 *c, u8 *p)
 {
   aes128_ctx ctx;
 

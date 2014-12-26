@@ -28,11 +28,11 @@
   }                                                                 \
                                                                     \
   __attribute__ ((unused)) static const name##_ctx dummy;           \
-  static const uint8 pad[sizeof dummy.buf] = { 0x80 };              \
+  static const u8 pad[sizeof dummy.buf] = { 0x80 };                 \
   static const uint buflen = sizeof dummy.buf;                      \
   static const uint mlenoffset = buflen - (2 * sizeof dummy.h[0]);  \
                                                                     \
-  void name##_update(name##_ctx *ctx, const uint8 *m, uint mlen)    \
+  void name##_update(name##_ctx *ctx, const u8 *m, uint mlen)       \
   {                                                                 \
     uint pos;                                                       \
     uint take;                                                      \
@@ -53,7 +53,7 @@
     }                                                               \
   }                                                                 \
                                                                     \
-  void name##_final(name##_ctx *ctx, uint8 *h)                      \
+  void name##_final(name##_ctx *ctx, u8 *h)                         \
   {                                                                 \
     uint pos;                                                       \
     uint diff;                                                      \
@@ -74,7 +74,7 @@
     packh(ctx, h);                                                  \
   }                                                                 \
                                                                     \
-  void name##_digest(const uint8 *m, uint mlen, uint8 *h)           \
+  void name##_digest(const u8 *m, uint mlen, u8 *h)                 \
   {                                                                 \
     name##_ctx ctx;                                                 \
                                                                     \

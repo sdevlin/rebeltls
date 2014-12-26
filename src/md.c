@@ -9,7 +9,7 @@ static uint min(uint a, uint b)
   return a < b ? a : b;
 }
 
-void md_update(const md_defn *defn, md_ctx *ctx, const uint8 *m, uint mlen)
+void md_update(const md_defn *defn, md_ctx *ctx, const u8 *m, uint mlen)
 {
   uint offset, take;
 
@@ -31,7 +31,7 @@ void md_update(const md_defn *defn, md_ctx *ctx, const uint8 *m, uint mlen)
 
 void md_final(const md_defn *defn, md_ctx *ctx)
 {
-  uint8 *buf;
+  u8 *buf;
   uint buflen;
   uint i;
 

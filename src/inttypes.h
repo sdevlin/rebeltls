@@ -5,24 +5,24 @@
 #include <stdint.h>
 
 typedef unsigned uint;
-typedef int8_t int8;
-typedef uint8_t uint8;
-typedef int16_t int16;
-typedef uint16_t uint16;
-typedef uint32_t uint24;
-typedef int32_t int32;
-typedef uint32_t uint32;
-typedef int64_t int64;
-typedef uint64_t uint64;
+typedef int8_t i8;
+typedef uint8_t u8;
+typedef int16_t i16;
+typedef uint16_t u16;
+typedef uint32_t u24;
+typedef int32_t i32;
+typedef uint32_t u32;
+typedef int64_t i64;
+typedef uint64_t u64;
 typedef struct {
-  uint64 hi;
-  uint64 lo;
-} uint128;
+  u64 hi;
+  u64 lo;
+} u128;
 
-extern uint24 uint24_clamp(uint24 x);
+extern u24 u24_clamp(u24 x);
 
-extern void uint128_zero(uint128 *x);
-extern void uint128_xor(uint128 *x, const uint128 *y, const uint128 *z);
-extern uint uint128_bit(uint128 *x, uint k);
+extern void u128_zero(u128 *x);
+extern void u128_xor(u128 *x, const u128 *y, const u128 *z);
+extern uint u128_bit(u128 *x, uint k);
 
 #endif

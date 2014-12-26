@@ -7,14 +7,14 @@
 #include "inttypes.h"
 #include "md_defn.h"
 
-const uint32 md5_initstate[] = {
+const u32 md5_initstate[] = {
   0x67452301,
   0xefcdab89,
   0x98badcfe,
   0x10325476
 };
 
-static const uint32 T[] = {
+static const u32 T[] = {
   0xd76aa478, 0xe8c7b756, 0x242070db, 0xc1bdceee,
   0xf57c0faf, 0x4787c62a, 0xa8304613, 0xfd469501,
   0x698098d8, 0x8b44f7af, 0xffff5bb1, 0x895cd7be,
@@ -33,29 +33,29 @@ static const uint32 T[] = {
   0xf7537e82, 0xbd3af235, 0x2ad7d2bb, 0xeb86d391
 };
 
-static uint32 rotl(uint32 x, uint n)
+static u32 rotl(u32 x, uint n)
 {
   assert(n > 0);
   assert(n < 32);
   return (x << n) | (x >> (32-n));
 }
 
-static uint32 f(uint32 x, uint32 y, uint32 z)
+static u32 f(u32 x, u32 y, u32 z)
 {
   return (x & y) | (~x & z);
 }
 
-static uint32 g(uint32 x, uint32 y, uint32 z)
+static u32 g(u32 x, u32 y, u32 z)
 {
   return (x & z) | (y & ~z);
 }
 
-static uint32 h(uint32 x, uint32 y, uint32 z)
+static u32 h(u32 x, u32 y, u32 z)
 {
   return x ^ y ^ z;
 }
 
-static uint32 i(uint32 x, uint32 y, uint32 z)
+static u32 i(u32 x, u32 y, u32 z)
 {
   return y ^ (x | ~z);
 }
@@ -65,8 +65,8 @@ static uint32 i(uint32 x, uint32 y, uint32 z)
 
 void md5_compress(md5_ctx *ctx)
 {
-  uint32 x[16];
-  uint32 a, b, c, d;
+  u32 x[16];
+  u32 a, b, c, d;
 
   bindata_unpack(ctx->buf, "< L[16]", x);
 
@@ -154,7 +154,7 @@ static void packmlen(md5_ctx *ctx)
   bindata_pack(ctx->buf + 56, "< Q", ctx->mlen << 3);
 }
 
-static void packh(md5_ctx *ctx, uint8 *h)
+static void packh(md5_ctx *ctx, u8 *h)
 {
   bindata_pack(h, "< L[4]", ctx->h);
 }

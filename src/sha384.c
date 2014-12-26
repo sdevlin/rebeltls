@@ -8,7 +8,7 @@
 #include "sha512.h"
 #include "inttypes.h"
 
-static const uint64 h[] = {
+static const u64 h[] = {
   0xcbbb9d5dc1059ed8, 0x629a292a367cd507,
   0x9159015a3070dd17, 0x152fecd8f70e5939,
   0x67332667ffc00b31, 0x8eb44a8768581511,
@@ -39,7 +39,7 @@ void sha384_compress(sha384_ctx *ctx)
   sha512_compress(ctx);
 }
 
-static uint8 *md_buffer(md_ctx *ctx)
+static u8 *md_buffer(md_ctx *ctx)
 {
   return ((sha384_ctx *)ctx)->buf;
 }
@@ -62,18 +62,18 @@ static const md_defn defn = {
   .packmlen = &md_packmlen
 };
 
-void sha384_update(sha384_ctx *ctx, const uint8 *m, uint mlen)
+void sha384_update(sha384_ctx *ctx, const u8 *m, uint mlen)
 {
   md_update(&defn, (md_ctx *)ctx, m, mlen);
 }
 
-void sha384_final(sha384_ctx *ctx, uint8 *h)
+void sha384_final(sha384_ctx *ctx, u8 *h)
 {
   md_final(&defn, (md_ctx *)ctx);
   bindata_pack(h, "> Q[6]", ctx->h);
 }
 
-void sha384_digest(const uint8 *m, uint mlen, uint8 *h)
+void sha384_digest(const u8 *m, uint mlen, u8 *h)
 {
   sha384_ctx ctx;
 

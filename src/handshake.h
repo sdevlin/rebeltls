@@ -15,8 +15,8 @@ enum {
 };
 
 struct handshake {
-  uint8 msg_type;
-  uint24 length;
+  u8 msg_type;
+  u24 length;
   union {
     struct { } client_hello;
     struct { } server_hello;

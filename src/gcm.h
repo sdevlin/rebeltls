@@ -12,33 +12,33 @@ enum {
 typedef struct {
   const bc_defn *defn;
   bc_ctx cctx;
-  uint8 h[16];
-  uint8 iv[12];
-  uint32 ctr;
+  u8 h[16];
+  u8 iv[12];
+  u32 ctr;
   uint adlen;
   uint mlen;
   int dir;
 } gcm_ctx;
 
 extern void gcm_init(gcm_ctx *ctx, const bc_defn *defn,
-                     const uint8 *key, const uint8 *iv, int dir);
-extern gcm_ctx *gcm_new(const bc_defn *defn, const uint8 *key,
-                        const uint8 *iv, int dir);
+                     const u8 *key, const u8 *iv, int dir);
+extern gcm_ctx *gcm_new(const bc_defn *defn, const u8 *key,
+                        const u8 *iv, int dir);
 
-extern void gcm_adupdate(gcm_ctx *ctx, const uint8 *ad, uint adlen);
+extern void gcm_adupdate(gcm_ctx *ctx, const u8 *ad, uint adlen);
 extern void gcm_adfinal(gcm_ctx *ctx);
 
-extern void gcm_update(gcm_ctx *ctx, const uint8 *in, uint8 *out, uint len);
-extern void gcm_final(gcm_ctx *ctx, uint8 *tag);
+extern void gcm_update(gcm_ctx *ctx, const u8 *in, u8 *out, uint len);
+extern void gcm_final(gcm_ctx *ctx, u8 *tag);
 
-extern void gcm_encrypt(const bc_defn *defn, const uint8 *key,
-                        const uint8 *ad, uint adlen,
-                        const uint8 *p, uint plen,
-                        uint8 *c, uint8 *tag);
+extern void gcm_encrypt(const bc_defn *defn, const u8 *key,
+                        const u8 *ad, uint adlen,
+                        const u8 *p, uint plen,
+                        u8 *c, u8 *tag);
 
-extern void gcm_decrypt(const bc_defn *defn, const uint8 *key,
-                        const uint8 *ad, uint adlen,
-                        const uint8 *c, uint clen,
-                        uint8 *p, const uint8 *tag);
+extern void gcm_decrypt(const bc_defn *defn, const u8 *key,
+                        const u8 *ad, uint adlen,
+                        const u8 *c, uint clen,
+                        u8 *p, const u8 *tag);
 
 #endif
