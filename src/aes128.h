@@ -14,6 +14,7 @@ typedef struct {
 } aes128_ctx;
 
 void aes128_init(aes128_ctx *ctx, const byte *key, int dir);
+aes128_ctx *aes128_new(const byte *key, int dir);
 
 void aes128_permute(const aes128_ctx *ctx, const byte *in, byte *out);
 

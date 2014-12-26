@@ -310,6 +310,15 @@ void aes128_init(aes128_ctx *ctx, const byte *key, int dir)
   }
 }
 
+aes128_ctx *aes128_new(const byte *key, int dir)
+{
+  aes128_ctx *ctx;
+
+  ctx = malloc(sizeof *ctx);
+  aes128_init(ctx, key, dir);
+  return ctx;
+}
+
 static uint32 enc_roundstep(uint32 a, uint32 b, uint32 c, uint32 d, uint32 k)
 {
   return (enc_T0((a >> 24) & 0xff) ^
