@@ -267,15 +267,35 @@ static const uint8 enc_T[] = {
   0x3a, 0x16, 0x16, 0x2c, 0x3a, 0x16, 0x16, 0x00
 };
 
-#define enc_T0(b) (((const uint32 *)(enc_T    ))[(b) << 1])
+static uint32 enc_T0(uint8 b)
+{
+  const uint32 *T = (const uint32 *)enc_T;
+  return T[b << 1];
+}
 
-#define enc_T1(b) (((const uint32 *)(enc_T + 1))[(b) << 1])
+static uint32 enc_T1(uint8 b)
+{
+  const uint32 *T = (const uint32 *)(enc_T + 1);
+  return T[b << 1];
+}
 
-#define enc_T2(b) (((const uint32 *)(enc_T + 2))[(b) << 1])
+static uint32 enc_T2(uint8 b)
+{
+  const uint32 *T = (const uint32 *)(enc_T + 2);
+  return T[b << 1];
+}
 
-#define enc_T3(b) (((const uint32 *)(enc_T + 3))[(b) << 1])
+static uint32 enc_T3(uint8 b)
+{
+  const uint32 *T = (const uint32 *)(enc_T + 3);
+  return T[b << 1];
+}
 
-#define S(b) (((const uint8 *)(enc_T + 1))[(b) << 3])
+static uint8 S(uint8 b)
+{
+  const uint8 *S = enc_T + 1;
+  return S[b << 3];
+}
 
 static uint32 Rcon[] = {
   0x00000000,                   /* unused */
