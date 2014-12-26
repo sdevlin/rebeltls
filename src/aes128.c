@@ -274,7 +274,7 @@ static const uint8 enc_T[] = {
 
 #define enc_T3(b) (((const uint32 *)(enc_T + 3))[(b) << 1])
 
-#define S(b) (((const byte *)(enc_T + 1))[(b) << 3])
+#define S(b) (((const uint8 *)(enc_T + 1))[(b) << 3])
 
 static uint32 Rcon[] = {
   0x00000000,                   /* unused */
