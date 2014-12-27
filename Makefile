@@ -1,6 +1,4 @@
-CFLAGS = -Wall -Wextra -Werror -Wno-gnu-zero-variadic-macro-arguments -pedantic -std=c99 -I/usr/local/include -O2
-LDFLAGS = -L/usr/local/lib
-LDLIBS = -lgmp
+CFLAGS = -Wall -Wextra -Werror -Wno-gnu-zero-variadic-macro-arguments -pedantic -std=c99 -O2
 
 A_TARGET = build/librebeltls.a
 SO_TARGET = $(patsubst %.a,%.so,$(A_TARGET))
